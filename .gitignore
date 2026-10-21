@@ -1,0 +1,11 @@
+# This repository tracks coordination files only. Application repos stay independent.
+/*
+!/.gitignore
+!/.gitattributes
+!/AGENTS.md
+!/README.md
+!/SYSTEM.md
+!/DEVELOPMENT.md
+!/WORK_ITEMS.md
+!/repositories.json
+!/blauframe.code-workspace

@@ -1,0 +1,11 @@
+{
+  "workspaceRemote": "https://github.com/farnai/blauframe-workspace.git",
+  "baselineDate": "2026-10-21",
+  "note": "Branches and commits are the initial local audit baseline, not a release lock or a claim about remote HEAD. Verify the target branch before each task.",
+  "repositories": [
+    { "name": "blauframe-admin", "path": "blauframe-admin", "remote": "git@github.com:sarsevanidze/blauframe-admin.git", "baselineBranch": "main", "baselineCommit": "4cb6af3be74027a73622989095085048cb6b0d50", "role": "Business administration UI" },
+    { "name": "blauframe-api", "path": "blauframe-api", "remote": "https://github.com/sarsevanidze/blauframe-api", "baselineBranch": "main", "baselineCommit": "c2c65046ea3b2b9fb380d6b474049c0fc0f141d3", "role": "Laravel business API" },
+    { "name": "blauframe-app", "path": "blauframe-app", "remote": "git@github.com:sarsevanidze/blauframe-app.git", "baselineBranch": "dev", "baselineCommit": "419c7037e25d35fc366cd433a17c4e4dd95590b9", "role": "Client portal" },
+    { "name": "blauframe-frontend", "path": "blauframe-frontend", "remote": "https://github.com/sarsevanidze/blauframe-frontend.git", "baselineBranch": "main", "baselineCommit": "7b21fc8ebdb6a139151abe0b73771f16084f01d5", "role": "Marketing site and embedded Payload CMS" }
+  ]
+}

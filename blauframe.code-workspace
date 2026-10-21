@@ -1,0 +1,10 @@
+{
+  "folders": [
+    { "name": "Workspace coordination", "path": "." },
+    { "path": "blauframe-api" },
+    { "path": "blauframe-admin" },
+    { "path": "blauframe-app" },
+    { "path": "blauframe-frontend" }
+  ],
+  "settings": { "git.autoRepositoryDetection": true }
+}
