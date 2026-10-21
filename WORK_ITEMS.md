@@ -18,14 +18,15 @@ these application changes.
 | Repository | Local commit | Change |
 | --- | --- | --- |
 | Admin | `aa7be51`, `ae7fbdc` | Workspace instructions, corrected auth paths, realtime docs, dynamic dashboard metrics/charts/tasks, and calendar navigation fix |
-| API | `a2092ea` | New AGENTS.md, safer setup documentation, role and login-envelope corrections |
-| App | `c08d607`, `feb5376`, `7105f74` | Workspace instructions, calendar chevron positioning, onboarding projects gating, safe Echo handling, dynamic dashboard metrics/charts, and user-isolated recently viewed |
+| API | `a2092ea`, `d64dec4` | New AGENTS.md, role corrections, bidirectional synchronization between company/user tables on update, and UserResource company relation fallback |
+| App | `c08d607`, `feb5376`, `7105f74`, `fc907c4` | Workspace instructions, calendar chevron positioning, onboarding projects gating, safe Echo handling, dynamic dashboard, live profile & company settings synchronization with window-focus refetch |
 | Landing | `eb19253`, `bbf45c9` | Build separated from CMS mutations, explicit deploy steps, media preservation tests, and full ESLint resolution (0 errors, 0 warnings) |
 
 Validation:
 
 - Admin: 230 tests passed (39 files); production build succeeded (36 pages). Dashboard metrics, charts, and active tasks hooked dynamically to backend APIs (`/v1/cp/dashboard/metrics`, `/v1/cp/dashboard/charts`, `/v1/tasks`); hardcoded mock metrics and sparklines removed; calendar navigation fixed.
-- App: 112 tests passed (15 files); production build succeeded (29 pages). Dashboard metrics, charts, and active tasks hooked dynamically to backend; empty-state handling added for 0 completed tasks/activity; hardcoded percentage badges removed when uncomputed; recently viewed isolated per user ID and removed from dashboard.
+- App: 112 tests passed (15 files); production build succeeded (29 pages). Dashboard metrics, charts, and active tasks hooked dynamically to backend; empty-state handling added for 0 completed tasks/activity; hardcoded percentage badges removed when uncomputed; recently viewed isolated per user ID; settings profile form dynamically bound with active company relation and window focus refetch.
+- API: Bidirectional sync between company and users ensured in `UpdateCompanyAction`, `UpdateUserAction`, and `UpdateProfileAction`; `UserResource` falls back to `company` relation for `company_name`, `company_address`, `tax_id`, and `phone`.
 
 
 - Root JSON, four separate Git boundaries, instruction references and selected
