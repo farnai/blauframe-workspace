@@ -17,9 +17,9 @@ these application changes.
 
 | Repository | Local commit | Change |
 | --- | --- | --- |
-| Admin | `aa7be51`, `ae7fbdc` | Workspace instructions, corrected auth paths, realtime docs, dynamic dashboard metrics/charts/tasks, and calendar navigation fix |
-| API | `a2092ea`, `d64dec4` | New AGENTS.md, role corrections, bidirectional synchronization between company/user tables on update, and UserResource company relation fallback |
-| App | `c08d607`, `feb5376`, `7105f74`, `fc907c4` | Workspace instructions, calendar chevron positioning, onboarding projects gating, safe Echo handling, dynamic dashboard, live profile & company settings synchronization with window-focus refetch |
+| Admin | `aa7be51`, `ae7fbdc`, `61cf0ba` | Workspace instructions, corrected auth paths, realtime docs, dynamic dashboard metrics/charts/tasks, calendar navigation fix, and user avatar display in UsersTable, Header, and Sidebar |
+| API | `a2092ea`, `d64dec4`, `c6eb71f`, `49a158a` | New AGENTS.md, role corrections, bidirectional synchronization between company/user tables on update, 2MB avatar upload/deletion endpoints, and avatar column fallback in Application/CP UserResource |
+| App | `c08d607`, `feb5376`, `7105f74`, `fc907c4`, `32bf369`, `37399f2` | Workspace instructions, calendar chevron positioning, onboarding projects gating, safe Echo handling, dynamic dashboard, live profile & company settings synchronization, avatar upload/remove UI with 2MB validation, direct header dropdown and sidebar links to Settings, synchronized on both main and dev branches |
 | Landing | `eb19253`, `bbf45c9` | Build separated from CMS mutations, explicit deploy steps, media preservation tests, and full ESLint resolution (0 errors, 0 warnings) |
 
 Validation:
