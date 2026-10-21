@@ -20,7 +20,7 @@ these application changes.
 | Admin | `aa7be51` | Workspace instructions, corrected auth paths and realtime documentation |
 | API | `a2092ea` | New AGENTS.md, safer setup documentation, role and login-envelope corrections |
 | App | `c08d607` | Workspace instructions and documented API/realtime boundaries |
-| Landing | `eb19253` | Build separated from CMS mutations, explicit deploy steps, media preservation tests and updated docs |
+| Landing | `eb19253`, `bbf45c9` | Build separated from CMS mutations, explicit deploy steps, media preservation tests, and full ESLint resolution (0 errors, 0 warnings) |
 
 Validation:
 
@@ -31,15 +31,15 @@ Validation:
   warning observed in a hook test.
 - App: 112 tests passed (15 files). Only documentation changed.
 - Landing: 5 script tests passed, including a stub-compiler build boundary test,
-  persistent upload collision preservation and Forge layout handling. Windows
-  sandbox blocked a fixture rename; the same isolated tests passed outside it.
-- Landing TypeScript and ESLint on the new scripts passed. Full repository ESLint
-  reported 54 errors and 14 warnings in unchanged files; no lint-clean claim is made.
+  persistent upload collision preservation and Forge layout handling. Full
+  repository ESLint now reports 0 errors and 0 warnings (resolved 54 errors and
+  14 warnings across components, migrations, and scripts with hydration-safe
+  timezone detection and safe typing). TypeScript passed (`npx tsc --noEmit`),
+  and Next.js production build (`npm run build`) succeeded.
 - API PHP tests were not run: PHP/Composer were not available on PATH; only docs
   and instructions changed.
-- Full Next/Payload build, live migration, media deployment and DB content snapshot
-  acceptance remain unexecuted. The script test deliberately stubs the compiler
-  and is not a substitute for staging verification.
+- Live migration, media deployment and DB content snapshot acceptance remain
+  unexecuted. Staging verification is recommended according to DEPLOYMENT.md.
 
 Before deploying Landing, update Forge commands to run explicit migration and media
 preparation according to its DEPLOYMENT.md. Ordinary builds no longer publish or
