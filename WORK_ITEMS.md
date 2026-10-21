@@ -19,7 +19,7 @@ these application changes.
 | --- | --- | --- |
 | Admin | `aa7be51` | Workspace instructions, corrected auth paths and realtime documentation |
 | API | `a2092ea` | New AGENTS.md, safer setup documentation, role and login-envelope corrections |
-| App | `c08d607` | Workspace instructions and documented API/realtime boundaries |
+| App | `c08d607`, `feb5376` | Workspace instructions, calendar chevron positioning, projects gating on onboarding, and safe Echo handling |
 | Landing | `eb19253`, `bbf45c9` | Build separated from CMS mutations, explicit deploy steps, media preservation tests, and full ESLint resolution (0 errors, 0 warnings) |
 
 Validation:
@@ -29,7 +29,9 @@ Validation:
   root files and additional project folders.
 - Admin: 230 tests passed (39 files); TypeScript passed. Existing React `act()`
   warning observed in a hook test.
-- App: 112 tests passed (15 files). Only documentation changed.
+- App: 112 tests passed (15 files). Production build succeeded (29 pages). Fixed
+  calendar navigation arrows, gated projects fetch in sidebar during onboarding to
+  eliminate 403, and added graceful WebSocket error handling.
 - Landing: 5 script tests passed, including a stub-compiler build boundary test,
   persistent upload collision preservation and Forge layout handling. Full
   repository ESLint now reports 0 errors and 0 warnings (resolved 54 errors and
