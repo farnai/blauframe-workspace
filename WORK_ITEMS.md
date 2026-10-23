@@ -17,16 +17,17 @@ these application changes.
 
 | Repository | Local commit | Change |
 | --- | --- | --- |
-| Admin | `aa7be51`, `ae7fbdc`, `61cf0ba`, `9169171`, `e49e135` | Workspace instructions, corrected auth paths, realtime docs, dynamic dashboard metrics/charts/tasks, calendar navigation fix, user avatar display in UsersTable/Header/Sidebar, explicit image removal, and Kanban board project resolution, company filtering & task creation fix |
-| API | `a2092ea`, `d64dec4`, `c6eb71f`, `49a158a`, `40608c4`, `85184f6` | New AGENTS.md, role corrections, bidirectional synchronization between company/user tables on update, 2MB avatar upload/deletion endpoints, avatar column fallback in Application/CP UserResource, explicit removal handling, CP TaskResource project/company relations, and task filtering by company |
-| App | `c08d607`, `feb5376`, `7105f74`, `fc907c4`, `32bf369`, `37399f2` | Workspace instructions, calendar chevron positioning, onboarding projects gating, safe Echo handling, dynamic dashboard, live profile & company settings synchronization, avatar upload/remove UI with 2MB validation, direct header dropdown and sidebar links to Settings, synchronized on both main and dev branches |
+| Admin | `aa7be51`, `ae7fbdc`, `61cf0ba`, `9169171`, `e49e135`, `f50936c` | Workspace instructions, corrected auth paths, realtime docs, dynamic dashboard metrics/charts/tasks, calendar navigation fix, user avatar display in UsersTable/Header/Sidebar, explicit image removal, Kanban board project resolution, company filtering & task creation fix, guarded drawer create vs update state checks across 10+ modules, support tickets edit button and dynamic mutation hook |
+| API | `a2092ea`, `d64dec4`, `c6eb71f`, `49a158a`, `40608c4`, `85184f6`, `8216fd5` | New AGENTS.md, role corrections, bidirectional synchronization between company/user tables on update, 2MB avatar upload/deletion endpoints, avatar column fallback in Application/CP UserResource, explicit removal handling, CP TaskResource project/company relations, task filtering by company, Application TaskResource subtasks & attachments eager loading, company_id inclusion, and company-scoped task detail authorization |
+| App | `c08d607`, `feb5376`, `7105f74`, `fc907c4`, `32bf369`, `37399f2`, `b27f3a1` | Workspace instructions, calendar chevron positioning, onboarding projects gating, safe Echo handling, dynamic dashboard, live profile & company settings synchronization, avatar upload/remove UI with 2MB validation, direct header dropdown and sidebar links to Settings, Kanban board subtask exclusion from root status columns, project badge chips on task cards |
 | Landing | `eb19253`, `bbf45c9` | Build separated from CMS mutations, explicit deploy steps, media preservation tests, and full ESLint resolution (0 errors, 0 warnings) |
 
 Validation:
 
-- Admin: 230 tests passed (39 files); production build succeeded (36 pages). Dashboard metrics, charts, and active tasks hooked dynamically to backend APIs (`/v1/cp/dashboard/metrics`, `/v1/cp/dashboard/charts`, `/v1/tasks`); hardcoded mock metrics and sparklines removed; calendar navigation fixed.
-- App: 112 tests passed (15 files); production build succeeded (29 pages). Dashboard metrics, charts, and active tasks hooked dynamically to backend; empty-state handling added for 0 completed tasks/activity; hardcoded percentage badges removed when uncomputed; recently viewed isolated per user ID; settings profile form dynamically bound with active company relation and window focus refetch.
-- API: Bidirectional sync between company and users ensured in `UpdateCompanyAction`, `UpdateUserAction`, and `UpdateProfileAction`; `UserResource` falls back to `company` relation for `company_name`, `company_address`, `tax_id`, and `phone`.
+- Admin: 251 tests passed (43 files); TypeScript passed. Guarded `drawer.item?.id` across all admin forms to eliminate broken quick-add create flows; fixed support ticket editing closure.
+- App: 138 tests passed (19 files); TypeScript passed. Filtered subtasks from top-level Kanban columns and populated project names from project map.
+- API: 420 Pest feature/unit tests passed (2972 assertions). Verified Application Task show endpoint eager loads subtasks and attachments and enforces company scoping.
+- Bidirectional sync between company and users ensured in `UpdateCompanyAction`, `UpdateUserAction`, and `UpdateProfileAction`; `UserResource` falls back to `company` relation for `company_name`, `company_address`, `tax_id`, and `phone`.
 
 
 - Root JSON, four separate Git boundaries, instruction references and selected
