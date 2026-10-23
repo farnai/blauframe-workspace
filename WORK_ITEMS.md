@@ -65,4 +65,19 @@ seed pages. Existing CMS content was not modified or restored by this task.
 | BF-008 | Medium | Re-audit remaining landing issues and historical maintenance scripts; validate environment handling and content scripts before use. |
 | BF-009 | High | Verify runtime broadcast-auth routes and Sanctum middleware against both Echo client URLs; test authorized and unauthorized private subscriptions. |
 
+## BF-WORKSPACE-002 — Test Suite Modernization & Lint Resolution (Admin & App)
+
+Scope: System audit, ESLint warning eradication, React hook dependency fixes, and test coverage additions for recently added features (Drive file management, KPI cards with sparklines, Task flow ProjectPickerGrid, Projects and Tasks services).
+
+Implementation complete on 2026-10-23:
+- **Admin**:
+  - ESLint: 0 warnings, 0 errors. Fixed hook dependencies in `kanban/page.tsx`, `transactions/page.tsx`, `tasks/page.tsx`, `projects/flow/page.tsx`, and `Sidebar.tsx`. Aliased `Image as ImageIcon` in `FileTable.tsx` and `files/page.tsx`.
+  - Tests: 42 test files passed, 248 passed tests (0 failures). Added new unit tests for `KpiCard` and `ProjectPickerGrid`. Fixed `act()` warning in `useFilters.test.ts` via `waitFor`.
+  - TypeScript: 0 errors (`npx tsc --noEmit`).
+- **App**:
+  - ESLint: 0 warnings, 0 errors. Removed unused imports in `chat/page.tsx`, `files/page.tsx`, `reset-password/page.tsx`, `Sidebar.tsx`, and `navigation.ts`. Memoized drive data and sidebar projects.
+  - Tests: 19 test files passed, 138 passed tests (0 failures). Added new unit tests for `KpiCard`, `filesService`, `projectsService`, `projectTasksService`, and `tasksService`.
+  - TypeScript: 0 errors (`npx tsc --noEmit`).
+  - Git: Synced `dev` and `main` branches and published to remote.
+
 Shared docs describe existing behavior unless explicitly marked as a proposal.
