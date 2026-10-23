@@ -78,6 +78,11 @@ Implementation complete on 2026-10-23:
   - ESLint: 0 warnings, 0 errors. Removed unused imports in `chat/page.tsx`, `files/page.tsx`, `reset-password/page.tsx`, `Sidebar.tsx`, and `navigation.ts`. Memoized drive data and sidebar projects.
   - Tests: 19 test files passed, 138 passed tests (0 failures). Added new unit tests for `KpiCard`, `filesService`, `projectsService`, `projectTasksService`, and `tasksService`.
   - TypeScript: 0 errors (`npx tsc --noEmit`).
-  - Git: Synced `dev` and `main` branches and published to remote.
+- **Landing / Frontend**:
+  - ESLint: 0 warnings, 0 errors (`npm run lint`).
+  - TypeScript: 0 errors (`npx tsc --noEmit`).
+  - Tests: 17 tests passed across 5 test suites (0 failures). Added standard `"test"` runner script to `package.json` and created unit tests for `proxy.ts` (Next.js 16 request proxy & locale redirection), `ecosystemData` (4 pillars & capabilities), `navigation-and-locales` (DE/EN translations & link building), and `pages-structure` (all route exports and fallback handling).
+  - Defensive fixes: Handled potential `null` pathname dereference in `Navbar.tsx` and `LanguageSwitcher.tsx`.
+  - Git: Committed and pushed to `chore/workspace-foundation`.
 
 Shared docs describe existing behavior unless explicitly marked as a proposal.
