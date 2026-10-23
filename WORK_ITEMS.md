@@ -85,4 +85,21 @@ Implementation complete on 2026-10-23:
   - Defensive fixes: Handled potential `null` pathname dereference in `Navbar.tsx` and `LanguageSwitcher.tsx`.
   - Git: Committed and pushed to `chore/workspace-foundation`.
 
+## BF-WORKSPACE-003 — Documentation Refresh & Cross-Platform Alignment
+
+Scope: Comprehensive review and synchronization of documentation across all four application repositories.
+
+Implementation complete on 2026-10-23:
+- **blauframe-frontend**:
+  - Updated `README.md` and `INSTALL.md` to document the new `"test"` script (`node --import tsx --test tests/*.test.mjs`), test directory structure, and the newly added page routes (`/cookie`, `/privacy`, `/terms`).
+  - Added recent testing and runtime null-safety notes to `KNOWN_BUGS.md`.
+- **blauframe-admin**:
+  - Updated `docs/modules.md` to document the `dashboard` module (live metrics, sparklines, task tables) and `ProjectPickerGrid` within the Project Flow canvas.
+  - Updated `docs/testing.md` to reflect 42 test suites (248 tests passing) and describe component tests for `KpiCard` and `ProjectPickerGrid`.
+- **blauframe-app**:
+  - Updated `docs/TESTING.md` with newly added service and UI tests (`filesService`, `projectsService`, `tasksService`, `KpiCard`).
+  - Updated `README.md` test suite counts (19 suites, 138 tests) and aligned workspace port convention documentation (port 3001).
+- **blauframe-api**:
+  - Clarified overview in `README.md` to cleanly distinguish `blauframe-app` (Client Portal) from `blauframe-frontend` (Marketing Landing).
+
 Shared docs describe existing behavior unless explicitly marked as a proposal.
