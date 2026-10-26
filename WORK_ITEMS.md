@@ -121,3 +121,18 @@ Implementation complete on 2026-10-27:
     - On `/onboarding`, reads booking session / query parameters and automatically calls `useScheduleStage` mutation for Stage 1 (Operating Model Fit) if unscheduled.
 - **blauframe-api**:
   - Hardened `RegisterAction.php` with resilient fallback to record prospective onboarding slots as `PENDING` when edge-case validation exceptions occur.
+
+## BF-WORKSPACE-005 — Realtime Broadcasting Auth & Cross-Portal WebSocket Resolution
+
+Scope: Resolve runtime 404 and authentication guard mismatch for Pusher / Echo WebSocket channels across `blauframe-app` and `blauframe-admin`.
+
+Implementation complete on 2026-10-27:
+- **blauframe-api**:
+  - Resolved `BF-BUG-012`:
+    - Registered Sanctum-authenticated broadcast routes under prefixes `v1/app`, `v1/cp`, and `v1` in `routes/api.php` (`Broadcast::routes(...)`).
+    - Added `'broadcasting/*'` to allowed CORS paths in `config/cors.php`.
+    - Added `['guards' => ['sanctum', 'web']]` to channel definitions in `routes/channels.php` (`App.Models.User.{id}` and `Conversation.{conversationId}`).
+    - Authorized admin users (`$user->isAdmin()`) to subscribe to conversation channels for customer support / control panel oversight.
+    - Authored dedicated test suite `tests/Feature/BroadcastingAuthTest.php` with 7 feature tests (10 assertions) covering unauthenticated 401, own user 200, cross-user 403, own conversation 200, cross-conversation 403, admin conversation 200, and customer accessing cp endpoint 403.
+    - Verified all 7 tests passing with Pest.
+
