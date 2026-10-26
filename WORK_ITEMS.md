@@ -104,3 +104,20 @@ Implementation complete on 2026-10-23:
   - Clarified overview in `README.md` to cleanly distinguish `blauframe-app` (Client Portal) from `blauframe-frontend` (Marketing Landing).
 
 Shared docs describe existing behavior unless explicitly marked as a proposal.
+
+## BF-WORKSPACE-004 — Marketing-to-App Booking Integration & Existing User Onboarding Session Auto-Scheduling
+
+Scope: Cross-platform booking parameter preservation, registration/login routing, and client portal onboarding stage auto-scheduling.
+
+Implementation complete on 2026-10-27:
+- **blauframe-frontend**:
+  - Resolved `BF-BUG-010`: booking widget redirect target now points to production client portal (`https://blauframe-app.on-forge.com/register`) on remote hosts via `getClientPortalBaseUrl()`.
+- **blauframe-app**:
+  - Resolved `BF-BUG-011`:
+    - Auto-redirects already-authenticated clients visiting `/register` to `/onboarding?scheduled_at=...` (or `/dashboard`).
+    - Preserves and forwards slot search parameters (`scheduled_at`, `date`, `time`, `tz`) across `/register` <-> `/login` links.
+    - Stores incoming booking session in `useWizardStore.bookingSession` and shows informative preview banner on `/login`.
+    - Automatically redirects to `/onboarding` upon login if a booking session is active.
+    - On `/onboarding`, reads booking session / query parameters and automatically calls `useScheduleStage` mutation for Stage 1 (Operating Model Fit) if unscheduled.
+- **blauframe-api**:
+  - Hardened `RegisterAction.php` with resilient fallback to record prospective onboarding slots as `PENDING` when edge-case validation exceptions occur.
