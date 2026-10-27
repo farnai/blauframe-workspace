@@ -60,18 +60,26 @@ failure behavior; do not introduce bidirectional copying by assumption.
 
 ## Known integration boundaries
 
-- Landing booking currently changes local UI state; no Laravel booking submission
-  was found in `BookingWidget.tsx`. Laravel onboarding scheduling is a separate flow.
-- Landing's localized login route is currently a placeholder. CMS-controlled links
+- Landing booking reads available slots from Laravel's public
+  `/api/v1/public/onboarding/availability` endpoint and redirects the selected UTC
+  slot to the Client Portal registration/login flow. The portal preserves the slot
+  and schedules onboarding stage 1 through Laravel after authentication. This is
+  the source-level contract; production end-to-end persistence still needs a
+  controlled test account and isolated test data.
+- Landing's localized login route redirects to the Client Portal `/login` using
+  `getClientPortalBaseUrl()`. The production destination still depends on runtime
+  configuration and was not confirmed against the live site. CMS-controlled links
   may redirect elsewhere; their live values were not inspected.
-- Portal HTTP base URL handling differs: Admin normalizes `/api`, App currently
-  expects it already present. Both should be configured with a base ending in `/api`
-  without a trailing slash, including for Echo.
+- Both portal HTTP clients normalize `NEXT_PUBLIC_API_URL` to include `/api` once.
+  Keep the configured value ending in `/api` without a trailing slash because
+  Echo's broadcast-auth URLs append `/v1/{app|cp}/broadcasting/auth` directly.
 - No root integration test pipeline was present at the initial audit. Existing
   repository tests do not prove all cross-repository contracts work together.
-- Both Echo clients target portal-specific broadcast-auth URLs. Matching explicit
-  routes were not found in the inspected Laravel source; runtime route/middleware
-  verification is tracked as BF-009 rather than assumed working.
+- Echo clients target portal-specific broadcast-auth URLs. Laravel registers
+  Sanctum-protected routes at `/api/v1/app/broadcasting/auth` and
+  `/api/v1/cp/broadcasting/auth`, and allows the broadcasting path through CORS.
+  Source and regression-test evidence do not establish that Forge has the API
+  revision deployed or that production Reverb is healthy.
 
 ## Documentation map
 

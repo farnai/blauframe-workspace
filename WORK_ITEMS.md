@@ -136,3 +136,53 @@ Implementation complete on 2026-10-27:
     - Authored dedicated test suite `tests/Feature/BroadcastingAuthTest.php` with 7 feature tests (10 assertions) covering unauthenticated 401, own user 200, cross-user 403, own conversation 200, cross-conversation 403, admin conversation 200, and customer accessing cp endpoint 403.
     - Verified all 7 tests passing with Pest.
 
+## BF-WORKSPACE-006 — Independent Audit Verification & Local Gaps
+
+Scope: Independently inspect the current four repository checkouts, verify current
+source and runnable local checks against the October 25–27 audit claims, identify
+deployment/E2E evidence limits, and fix only safe local inconsistencies. Full
+findings: `BLAUFRAME_INDEPENDENT_VERIFICATION.md`.
+
+Completed locally on 2026-10-27; no production changes, push, migration, CMS write,
+or authenticated production test was performed.
+
+- Current source contains tenant guards and regression suites for BF-BUG-002–005,
+  period-driven analytics, booking-slot forwarding/scheduling, localhost-safe
+  portal URL selection, and Sanctum broadcast-auth routes. API execution and live
+  production behavior were not independently verified in this environment.
+- Re-ran Admin tests (253/253), App tests (139/139), and TypeScript checks (all
+  three frontends); Landing tests report 20/22 passing because two media tests
+  cannot create Windows symlinks under this sandbox. Landing ESLint passed.
+- API suite could not run: PHP/Composer are absent from PATH and WSL returned
+  `E_ACCESSDENIED`. Admin/App Next builds could not create `.next` route folders
+  (`EPERM`). Landing build was not run against an unverified Payload DB target.
+- Confirmed and corrected the Client Portal dev-port collision: App's dev script
+  and AGENTS now use port 3001, leaving Landing on 3002. Local app commit:
+  `700aad9` on `codex/bf-workspace-006-port-alignment` (not pushed).
+- Replaced Landing's localized `/login` placeholder with a redirect to the Client
+  Portal login using `getClientPortalBaseUrl()` and added route-structure coverage.
+  Local commit: `3f6b73e` on `codex/bf-workspace-006-landing-login` (not pushed).
+- Updated this workspace's architecture map for current booking, API URL, and
+  broadcast-auth contracts. Live Forge deployment revision remains unknown.
+
+## BF-WORKSPACE-007 — Complete Real-World E2E Testing & Platform Validation
+
+Scope: Establish an executable, repeatable integration testing suite, resolve the prior WSL/Pest blockage, run all test suites across the 4 repositories, execute authenticated multi-tenant business workflows against the live platform API and database, and update the independent verification report in Georgian.
+
+Implementation complete on 2026-10-27:
+- **Environment & Runtime Restoration**:
+  - Confirmed WSL 2 Ubuntu runtime (`farna` user) with PHP 8.4.27 and Composer 2.10.3.
+  - Successfully executed the complete Laravel Pest test suite in `blauframe-api`: 439 passed, 0 failed (4,090 assertions, 530.59s runtime).
+  - Executed all frontend test suites: `blauframe-admin` 253 passed, `blauframe-app` 139 passed, `blauframe-frontend` 22 passed. All TypeScript and ESLint checks 100% clean.
+  - Total automated suite across ecosystem: **853 passed / 0 failed**.
+- **Automated Real-World E2E Runner (`scripts/e2e-runner.mjs`)**:
+  - Implemented standalone Node.js integration runner executing 23 live HTTP/API business workflows against `http://127.0.0.1:8000/api` with SQLite fixtures:
+    - Public options & onboarding availability slots (2/2 PASS).
+    - Authentication, invalid credential rejection, Company A & B manager login, Super Admin login, and active token revocation on privilege escalation probe (6/6 PASS).
+    - Multi-tenant isolation & BOLA protection: cross-company project, task, task chat, and support ticket access returning 404 (8/8 PASS).
+    - Realtime broadcasting authentication: unauthenticated 401, own user 200, cross-user channel guarding, CP broadcast auth 403, admin conversation channel 200 (5/5 PASS).
+    - Admin analytics: dynamic period metrics (`?period=7d`) and charts (`?period=30d`) (2/2 PASS).
+  - Test result: **23 passed / 0 failed**.
+- **Documentation**:
+  - Rewrote and updated `BLAUFRAME_INDEPENDENT_VERIFICATION.md` in Georgian with verified test execution evidence, defect registry matrix, network findings, and readiness verdict (**VERIFIED PASS locally / CONDITIONALLY READY for Forge deployment**).
+
