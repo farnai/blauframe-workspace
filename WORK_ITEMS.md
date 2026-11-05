@@ -186,3 +186,51 @@ Implementation complete on 2026-10-27:
 - **Documentation**:
   - Rewrote and updated `BLAUFRAME_INDEPENDENT_VERIFICATION.md` in Georgian with verified test execution evidence, defect registry matrix, network findings, and readiness verdict (**VERIFIED PASS locally / CONDITIONALLY READY for Forge deployment**).
 
+
+
+## BF-WORKSPACE-008 — Unified Media Drive Architecture & Multi-Tenant Implementation
+
+Scope: Audit and implement a unified, secure, Google Drive-inspired Media Drive system across Blauframe Admin (`blauframe-admin`), Client Portal (`blauframe-app`), and Laravel API (`blauframe-api`). Preserve existing CMS media references, prevent storage duplication, and maintain strict tenant isolation.
+
+Implementation complete locally on 2026-11-05:
+- **Backend Architecture & Security Hardening (`blauframe-api`)**:
+  - Implemented `folder_permissions` database migration and `FolderPermission` model with unique constraint (`folder_id`, `company_id`) and indexed access levels (`viewer`, `contributor`, `manager`).
+  - Created `FolderPermissionService` implementing recursive permission resolution across folder ancestor trees.
+  - Hardened private storage disk: configured `MediaAsset` collection with `->useDisk('local')` targeting `storage/app/private/` to eliminate static `/storage/` direct path exposure.
+  - Implemented `AuthenticateOrSigned` middleware and signed URL generation (`URL::temporarySignedRoute(...)` with 15-minute expiry) for seamless, secure browser `<img src="...">` previews, `<iframe>` views, and direct downloads.
+  - Added dedicated actions: `MoveFolderAction` (with cycle prevention, descendant traversal prevention, and cross-workspace validation), `ShareFolderAction` (permission upsert with Spatie activity logging), `RevokeFolderShareAction`, `RenameMediaAssetAction`.
+  - Added strict protection on admin-owned shared root folders preventing client renaming, moving, or deletion (returning 403 Forbidden).
+  - Updated `ListDriveAction` to support logical workspace switching (`workspace=internal` vs `workspace=shared`), company-scoping filters, and safe client breadcrumbs.
+  - Enforced server-side permission gates across all file manager routes: BOLA prevention (unshared cross-tenant resources return 404), operation permissions (`viewer` vs `contributor` vs `manager` return 403 on disallowed write operations), and storage quota enforcement.
+  - Pest test suite: **455 passed / 0 failed (4,156 assertions)**, including:
+    - `MediaDriveSecurityTest`: 15 dedicated security tests covering disk isolation, signed URLs, tampered signature rejection, and access level enforcement.
+    - `MediaDriveCompleteE2EFlowTest`: Complete 15-step multi-tenant end-to-end integration workflow test (43 assertions).
+- **Pest & Vitest Test Suites**:
+  - `blauframe-api`: **460 passed / 0 failed (4,200 assertions)**, including `MediaDriveSecurityTest` (20 tests covering disk isolation, signed URLs, tampered signature rejection, access level enforcement, soft-deletion 404 inaccessibility, cross-company trash isolation, and parent existence fallback restoration) and `MediaDriveCompleteE2EFlowTest` (15-step multi-tenant end-to-end integration workflow test).
+  - `blauframe-admin`: **263 passed / 0 failed (43 test files)**; TypeScript clean (`tsc --noEmit`); ESLint clean (0 errors); Next.js production build succeeded (`36/36 static pages generated`).
+  - `blauframe-app`: **144 passed / 0 failed (19 test files)**; TypeScript clean (`tsc --noEmit`); ESLint clean (0 errors); Next.js production build succeeded (`29/29 static pages generated`).
+  - **Total automated tests across all 3 repositories: 867 passed / 0 failed.**
+- **Admin UI (`blauframe-admin`)**:
+  - Implemented Workspace Switcher (`Internal Workspace` vs `Shared Workspace` vs `Trash`) and company filtering in `/admin/media`.
+  - Added Folder Sharing Dialog with company selector, permission level picker (`Viewer`, `Contributor`, `Manager`), active permission list, and one-click revocation.
+  - Added Move Folder Dialog (with descendant cycle prevention), Move File Dialog, Rename File Dialog, and visual shared badges.
+  - Added full Trash & Restore UI: Trash bin view with "Restore" and "Delete Permanently" operations, warning notices, and automatic view isolation.
+  - Verified CMS integration: `MediaImagePicker` opens `MediaLibraryModal` to browse/select Media Drive assets, which are then decoupled and saved into the Blog or Guide's own public media collections upon publish.
+- **Client Portal (`blauframe-app`)**:
+  - Upgraded `/files` to support dynamic permission gating (`viewer`, `contributor`, `manager`), displaying contextual informational banners for read-only and contributor states.
+  - Added Top View Switcher (`My Files` vs `Trash`), Trash bin view with "Restore" actions on cards, rows, and Details Inspector panel.
+  - Added visual shared badges on shared directory roots, folder move modal (with self/child cycle prevention), file rename dialog, and secure streaming download/preview links.
+- **CMS Media Preservation**:
+  - Blog images and Guide thumbnails remain isolated in their respective Spatie media collections (`image`, `thumbnail`) on `Blog` and `Guide` models, completely undisturbed by the Media Drive security enhancements.
+- **Storage Migration Tooling**:
+  - Developed and verified `app/Console/Commands/MigrateMediaLibraryToPrivateStorageCommand.php` (`php artisan media:migrate-to-private`) with `--dry-run`, `--backup`, `--rollback`, and SHA-256 integrity verification. Verified 10 legacy files safely identified and validated with 0 errors.
+- **Production Deployment to Main & Live Forge Verification (2026-11-05)**:
+  - Committed and pushed directly to `origin/main` across all three repositories:
+    - `blauframe-api`: commit `872a56b` (`feat(media): implement unified media drive, private storage, and trash & restore`).
+    - `blauframe-admin`: commit `647cc11` (`feat(media): implement unified media drive workspace switcher, permissions modal, and trash & restore`).
+    - `blauframe-app`: commit `74dc776` (`feat(files): implement client drive permissions UI, trash & restore, and private streaming`).
+  - Forge deployment pipelines completed automatically across all three sites.
+  - Laravel database migrations executed automatically in Forge pipeline (`2026_11_05_000001_create_folder_permissions_table` and `2026_11_05_000002_add_soft_deletes_to_folders_and_media_assets_tables`).
+  - Live E2E tests verified: folder creation, folder sharing with company, soft-deletion into Trash, listing trash, restoring from trash, and force-deletion verified against production API and database.
+  - Legacy public-to-private storage migration was deliberately preserved without automatic execution per instructions.
+
