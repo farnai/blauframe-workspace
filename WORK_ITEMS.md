@@ -233,4 +233,11 @@ Implementation complete locally on 2026-11-05:
   - Laravel database migrations executed automatically in Forge pipeline (`2026_11_05_000001_create_folder_permissions_table` and `2026_11_05_000002_add_soft_deletes_to_folders_and_media_assets_tables`).
   - Live E2E tests verified: folder creation, folder sharing with company, soft-deletion into Trash, listing trash, restoring from trash, and force-deletion verified against production API and database.
   - Legacy public-to-private storage migration was deliberately preserved without automatic execution per instructions.
+- **Shared Workspace UX & Logical Workspace Isolation Fix (2026-11-05)**:
+  - Fixed root cause where creating a folder in Shared Workspace defaulted to `company_id = null` without permissions, causing it to land in Internal Workspace instead of Shared Workspace.
+  - Enhanced New Folder dialog in `blauframe-admin` (`af5c66d`): when in Shared Workspace, prompts for client company to share with and permission level (`Viewer`, `Contributor`, `Manager`), pre-selecting filtered company if active.
+  - Hardened backend in `blauframe-api` (`2c4d975`): `storeFolder` automatically grants `FolderPermission` upon creation when `company_id` is passed; `ListDriveAction` strictly isolates Internal (unshared only) from Shared (company-assigned and permissioned folders).
+  - Fixed Carbon `toIso8601String()` date serialization in `MediaAssetController`.
+  - Pushed to `origin/main` in `blauframe-api` (`2c4d975`) and `blauframe-admin` (`af5c66d`); verified live on Forge.
+  - Granted sharing on existing production folder `test share` (ID 4) so `test share` with `shilda.jpg` now displays correctly in Shared Workspace with the `Shared` badge.
 
