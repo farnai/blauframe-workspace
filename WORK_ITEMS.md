@@ -355,6 +355,35 @@ Implementation complete locally and pushed to `main` on 2026-11-08:
   - Frontend Node.js tests: 25 passed / 0 failed (including 3 new availability expansion and localization tests).
 - Deployment: Committed (`db698fe` in `blauframe-api`, `0e84045` in `blauframe-frontend`) and pushed directly to `origin/main`.
 
+## BF-WORKSPACE-015 — Task Flow Handle Alignment, Stage Insertion & Subtask Canvas Containment
+
+Scope:
+1. Fix connection dot (handle) vertical alignment on task cards in Task Flow (`blauframe-admin` and `blauframe-app`): lock strictly to `top: 50%; transform: translateY(-50%)` and eliminate `hover:scale-110` which was overriding the transform matrix and causing the handle to expand downwards out of center.
+2. Fix handle and mid-edge insertion behavior: clicking the right handle or the mid-edge `+` button inserts a new root stage (`parent_id = null`, intermediate `position`) into the project sequence rather than creating a subtask.
+3. Accept and persist `position` in `blauframe-api` task store/update actions and requests.
+4. Contain subtasks inside each stage card checklist in both `blauframe-admin` and `blauframe-app`: prevent subtasks from exploding into parallel cards on the canvas with diverging/converging connector lines. The canvas remains a clean linear sequence of stages, while subtasks live inside each stage's card.
+
+Implementation complete locally and pushed to `main` on 2026-11-09:
+- Updated `blauframe-api`:
+  - [`app/Http/Requests/Application/StoreTaskRequest.php`](file:///c:/Projects/blauframe-api/app/Http/Requests/Application/StoreTaskRequest.php) & [`app/Http/Requests/CP/TaskStoreUpdateRequest.php`](file:///c:/Projects/blauframe-api/app/Http/Requests/CP/TaskStoreUpdateRequest.php): Added `'position' => ['nullable', 'integer']`.
+  - [`app/Actions/Task/StoreTaskAction.php`](file:///c:/Projects/blauframe-api/app/Actions/Task/StoreTaskAction.php): Persists `position`.
+- Updated `blauframe-admin`:
+  - [`src/app/(admin)/admin/tasks/api/service.ts`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/tasks/api/service.ts): Added `position?: number;` to `TaskPayload`.
+  - [`src/app/(admin)/admin/tasks/components/TaskForm.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/tasks/components/TaskForm.tsx): Added `position` to form schema, `defaultPosition` prop, and initialized default values.
+  - [`src/app/(admin)/admin/projects/flow/components/TaskNode.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/TaskNode.tsx): Enforced `style={{ top: '50%', transform: 'translateY(-50%)' }}` and removed `hover:scale-110` from source handle.
+  - [`src/app/(admin)/admin/projects/flow/components/FlowEdge.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/FlowEdge.tsx): Emits `onInsertTask(sourceTaskId, targetTaskId)`.
+  - [`src/app/(admin)/admin/projects/flow/hooks/useProjectFlow.ts`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/hooks/useProjectFlow.ts): Renders only sequential stages on canvas; connects stages sequentially.
+  - [`src/app/(admin)/admin/projects/flow/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/page.tsx): Computes intermediate `position` on stage insertion, opens "Add Task" drawer, and safely accesses `rawTasks` via ref.
+- Updated `blauframe-app`:
+  - [`src/app/(app)/projects/flow/components/TaskNode.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/components/TaskNode.tsx): Enforced centered handle positioning with `top: 50%; transform: translateY(-50%)`.
+  - [`src/app/(app)/projects/flow/hooks/useProjectFlow.ts`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/hooks/useProjectFlow.ts): Cleaned canvas layout to only render sequential stages and connect root tasks, keeping subtasks inside the card checklist.
+- Validation:
+  - API PHPUnit / Pest: 461 tests passed (4,258 assertions).
+  - Admin Vitest: 268 passed / 0 failed (44 test files).
+  - App Vitest: 145 passed / 0 failed (19 test files).
+  - Production builds: Next.js `npm run build` succeeded on both Admin (36/36 pages) and App (29/29 pages).
+
+
 
 
 
