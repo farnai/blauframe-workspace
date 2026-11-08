@@ -332,6 +332,30 @@ Implementation complete locally and pushed to `main` on 2026-11-08:
   - TypeScript: Next.js compilation succeeded and type checking completed with 0 errors.
 - Deployment: Committed (`159c22b` in `blauframe-frontend`) and pushed directly to `origin/main`.
 
+## BF-WORKSPACE-014 — Connect Book-a-Call Hours with Admin Availability & Localized Disabled Slots
+
+Scope: Connect the public `/book-a-call` booking page directly with Admin Availability (Working hours & Blocked periods):
+1. Dynamically list all hourly/slot windows corresponding to active Admin Working Hours (e.g. Monday 09:00–18:00 · 30 min yields all slots 09:00, 09:30 … 17:30). If Working Hours are updated in Admin, Book a Call reflects them in real-time.
+2. If any slot is blocked by Admin (via Blocked Periods) or booked, display that slot as disabled (unclickable, muted), with a hover tooltip displaying "დაკავებულია" translated to English ("Booked") on English routes and to German ("Belegt") on German routes (`/de/book-a-call`).
+
+Implementation complete locally and pushed to `main` on 2026-11-08:
+- Updated `blauframe-api`:
+  - [`app/Support/Onboarding/SlotAvailability.php`](file:///c:/Projects/blauframe-api/app/Support/Onboarding/SlotAvailability.php): Added `allWorkingSlotsForDay` to generate all slots within configured working windows. Extended `days()` with `$includeAll` flag and added `activeWorkingHours()`.
+  - [`app/Actions/Onboarding/GetAvailableSlotsAction.php`](file:///c:/Projects/blauframe-api/app/Actions/Onboarding/GetAvailableSlotsAction.php): Passes `$includeAll` and exposes `working_hours`.
+  - [`app/Http/Resources/Application/AvailabilityResource.php`](file:///c:/Projects/blauframe-api/app/Http/Resources/Application/AvailabilityResource.php): Appends `working_hours` to the response envelope.
+  - [`app/Http/Controllers/Api/PublicOnboardingController.php`](file:///c:/Projects/blauframe-api/app/Http/Controllers/Api/PublicOnboardingController.php): Accepts `include_all` (defaults to `true` for public availability) so landing page receives full working-hours slots with availability status.
+- Updated `blauframe-frontend`:
+  - [`src/components/sections/book-a-call/BookingWidget.tsx`](file:///c:/Projects/blauframe-frontend/src/components/sections/book-a-call/BookingWidget.tsx):
+    - Fetches `working_hours` and full slots with `include_all=true`.
+    - Generates dynamic slots based on admin working hours per weekday rather than a hardcoded static list.
+    - Renders blocked/booked slots with `disabled`, `cursor-not-allowed`, and a hover tooltip showing `"Booked"` (English) or `"Belegt"` (German).
+    - Prevents selection of blocked/disabled slots and clears selections on date changes.
+  - Added unit tests in [`tests/book-a-call-availability.test.mjs`](file:///c:/Projects/blauframe-frontend/tests/book-a-call-availability.test.mjs).
+- Validation:
+  - Frontend Node.js tests: 25 passed / 0 failed (including 3 new availability expansion and localization tests).
+- Deployment: Committed (`db698fe` in `blauframe-api`, `0e84045` in `blauframe-frontend`) and pushed directly to `origin/main`.
+
+
 
 
 
