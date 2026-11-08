@@ -403,6 +403,27 @@ Implementation complete locally and pushed to `main` on 2026-11-09:
   - App Vitest: 145 passed / 0 failed (19 test files).
   - Next.js build: Succeeded on both Admin (36/36) and App (29/29).
 
+## BF-WORKSPACE-017 — Restore Subtask Boxes Flow Sequence (Task -> Subtasks -> Task -> Subtasks)
+
+Scope:
+1. Restored subtask node generation on the canvas: subtasks render as distinct boxes in the sequence between their parent task and the next root task (`Task 1 -> [Subtasks 1.x] -> Task 2 -> [Subtasks 2.x]`).
+2. Maintained handle center alignment and smooth expand animation: handle dots remain vertically centered (`top: 50%; transform: translateY(-50%)` without hover jump), and child cards retain smooth unfold animation.
+3. Preserved fullscreen functionality and responsive auto-refit across Admin and App.
+
+Implementation complete locally and pushed to `main` on 2026-11-09:
+- Updated `blauframe-admin`:
+  - [`src/app/(admin)/admin/projects/flow/hooks/useProjectFlow.ts`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/hooks/useProjectFlow.ts): Restored `pushNode` recursive tree traversal and `getExitTasks` connection to the next root task.
+  - [`src/app/(admin)/admin/projects/flow/components/TaskNode.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/TaskNode.tsx): Restored child box unfold animation while keeping handle centering.
+  - [`src/app/(admin)/admin/projects/flow/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/page.tsx): Intelligently assigns `parentId` based on context when inserting tasks, and auto-expands parent on subtask creation.
+- Updated `blauframe-app`:
+  - [`src/app/(app)/projects/flow/hooks/useProjectFlow.ts`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/hooks/useProjectFlow.ts): Restored `pushNode` and `getExitTasks` in client flow.
+  - [`src/app/(app)/projects/flow/components/TaskNode.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/components/TaskNode.tsx): Restored child animation and verified centered handles.
+- Validation:
+  - Admin Vitest: 268 passed / 0 failed (44 test files).
+  - App Vitest: 145 passed / 0 failed (19 test files).
+  - Next.js production builds: Succeeded on both Admin (36/36) and App (29/29).
+
+
 
 
 
