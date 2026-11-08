@@ -261,4 +261,24 @@ Implementation complete locally and pushed to `main` on 2026-11-08:
   - Next.js build: `npm run build` succeeded (`29/29 static pages generated`).
 - Deployment: Committed (`1489061`) and pushed directly to `origin/main` in `blauframe-app`.
 
+## BF-WORKSPACE-010 — Admin Task Flow Add/Insert Task & Handle Click Fix
+
+Scope: Fix Task Flow on the Admin Control Panel (`blauframe-admin`) where clicking the node connection handle (dot on the right side of a task box) or hover interaction mistakenly opened "Edit Task" instead of "Add Task", and allow inserting task boxes between squares.
+
+Implementation complete locally and pushed to `main` on 2026-11-08:
+- Fixed React Flow event bubbling in [`blauframe-admin/src/app/(admin)/admin/projects/flow/components/TaskNode.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/TaskNode.tsx):
+  - Stopped pointerDown, mouseDown, and click propagation on the source Handle (`Position.Right`).
+  - Added interactive visual `+` button state on the dot on hover (`hover:!h-6 hover:!w-6 hover:!bg-[#2660E9]` with Lucide `Plus` icon and tooltip).
+- Guarded `handleNodeClick` in [`blauframe-admin/src/app/(admin)/admin/projects/flow/components/ProjectFlow.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/ProjectFlow.tsx) against clicks originating on handles or add buttons so clicking the box card opens "Edit Task", while clicking the dot/add button triggers "Add Task".
+- Added mid-edge insert button in [`blauframe-admin/src/app/(admin)/admin/projects/flow/components/FlowEdge.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/FlowEdge.tsx) using `EdgeLabelRenderer` so hovering the connection curve between boxes reveals a `+` button to insert a task between them.
+- Updated drawer title and submit button in [`blauframe-admin/src/app/(admin)/admin/projects/flow/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/page.tsx) to explicitly display "Add Task".
+- Exposed `position` in [`blauframe-api/app/Http/Resources/CP/TaskResource.php`](file:///c:/Projects/blauframe-api/app/Http/Resources/CP/TaskResource.php) and sorted root tasks by position in `useProjectFlow.ts`.
+- Validation:
+  - Added unit test in [`blauframe-admin/src/app/(admin)/admin/projects/flow/components/TaskNode.test.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/TaskNode.test.tsx).
+  - Vitest: 268 passed / 0 failed (44 test files).
+  - TypeScript: `tsc --noEmit` passed with 0 errors.
+  - Next.js build: `npm run build` succeeded (`36/36 static pages generated`).
+- Deployment: Committed (`b2d5886` in `blauframe-api`, `5df25e6` in `blauframe-admin`) and pushed directly to `origin/main`.
+
+
 
