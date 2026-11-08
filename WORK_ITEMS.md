@@ -299,6 +299,27 @@ Implementation complete locally and pushed to `main` on 2026-11-08:
   - Next.js build: `npm run build` succeeded on both apps (36/36 admin, 29/29 app).
 - Deployment: Committed (`67cb954` in `blauframe-admin`, `c838677` in `blauframe-app`) and pushed directly to `origin/main`.
 
+## BF-WORKSPACE-012 — Task Flow Shooting Lines Animation & Bidirectional Edge Status States
+
+Scope: Upgrade Task Flow connection animations and edge status reactivity across Admin Control Panel (`blauframe-admin`) and Client Portal (`blauframe-app`):
+1. Replace dot animation (`<circle>` elements with animateMotion) with sleek shooting laser lines/beams along the curve (`<path>` elements with animated SVG dash stroke and glowing halo trail).
+2. Fix edge status reactivity so that when a task is `in_progress`, the color changes to vibrant green on both sides (both incoming and outgoing edges).
+3. Fix edge status reactivity so that when a task is `done`, the animation disappears/fades out from both sides (both incoming and outgoing edges, unless target task is actively in progress).
+
+Implementation complete locally and pushed to `main` on 2026-11-08:
+- Updated `FlowEdge.tsx` in [`blauframe-admin/src/app/(admin)/admin/projects/flow/components/FlowEdge.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/FlowEdge.tsx) and [`blauframe-app/src/app/(app)/projects/flow/components/FlowEdge.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/components/FlowEdge.tsx):
+  - Renders a core laser beam line (`strokeDasharray="26 170"`, `strokeWidth={2.2}`) and soft glowing halo trail (`strokeDasharray="36 160"`, `strokeWidth={4.5}`) gliding from source to target.
+  - Computes `isInProgress = (isSourceInProgress || isTargetInProgress) && !isTargetDone`.
+  - Computes `isDone = isTargetDone || (isSourceDone && !isTargetInProgress)` to omit animation and display muted `#CBD5E1` curve.
+- Updated `useProjectFlow.ts` in both apps to supply `isSourceDone`, `isSourceInProgress`, `isTargetDone`, and `isTargetInProgress` to every edge.
+- Validation:
+  - Admin Vitest: 268 passed / 0 failed (44 test files).
+  - App Vitest: 145 passed / 0 failed (19 test files).
+  - TypeScript: `tsc --noEmit` passed with 0 errors across both apps.
+  - Next.js build: `npm run build` succeeded on both apps (36/36 admin, 29/29 app).
+- Deployment: Committed (`4c14b8d` in `blauframe-admin`, `30e1059` in `blauframe-app`) and pushed directly to `origin/main`.
+
+
 
 
 
