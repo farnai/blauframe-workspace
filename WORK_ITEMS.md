@@ -241,3 +241,24 @@ Implementation complete locally on 2026-11-05:
   - Pushed to `origin/main` in `blauframe-api` (`2c4d975`) and `blauframe-admin` (`af5c66d`); verified live on Forge.
   - Granted sharing on existing production folder `test share` (ID 4) so `test share` with `shilda.jpg` now displays correctly in Shared Workspace with the `Shared` badge.
 
+## BF-WORKSPACE-009 — Client Portal Workspace Navigation Menu Reordering
+
+Scope: Rearrange the workspace navigation menu items in the Client Portal (`blauframe-app`) to match the user-defined order:
+1. Projects (`/projects`)
+2. Tasks (`/tasks`)
+3. Analytics (`/reporting`)
+4. Files (`/files`)
+5. Calendar (`/calendar`)
+6. Guides (`/guides`)
+7. Billing (`/billing`)
+
+Implementation complete locally and pushed to `main` on 2026-11-08:
+- Updated `appNav` in [`blauframe-app/src/lib/constants/navigation.ts`](file:///c:/Projects/blauframe-app/src/lib/constants/navigation.ts) under `sectionWorkspace`.
+- Added unit test in [`blauframe-app/src/lib/constants/navigation.test.ts`](file:///c:/Projects/blauframe-app/src/lib/constants/navigation.test.ts) verifying the exact sequence of Workspace menu entries.
+- Validation:
+  - Vitest: 145 passed / 0 failed (19 test files).
+  - TypeScript: `tsc --noEmit` passed with 0 errors.
+  - Next.js build: `npm run build` succeeded (`29/29 static pages generated`).
+- Deployment: Committed (`1489061`) and pushed directly to `origin/main` in `blauframe-app`.
+
+
