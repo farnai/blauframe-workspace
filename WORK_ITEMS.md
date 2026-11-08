@@ -280,5 +280,25 @@ Implementation complete locally and pushed to `main` on 2026-11-08:
   - Next.js build: `npm run build` succeeded (`36/36 static pages generated`).
 - Deployment: Committed (`b2d5886` in `blauframe-api`, `5df25e6` in `blauframe-admin`) and pushed directly to `origin/main`.
 
+## BF-WORKSPACE-011 — Task Flow Initial Auto-Expand of All Tasks & Subtasks
+
+Scope: Ensure that upon initial page/project load in Task Flow, all tasks and their subtasks are automatically opened/expanded by default, while allowing users to freely collapse/expand any task afterwards.
+
+Implementation complete locally and pushed to `main` on 2026-11-08:
+- Updated `AdminProjectFlowPage` in [`blauframe-admin/src/app/(admin)/admin/projects/flow/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/page.tsx):
+  - Uses `initializedProjectRef` to detect first load of each project.
+  - Automatically initializes `expandedIds` with all task IDs so subtasks and child blocks are open by default.
+  - User collapse/expand clicks mutate `expandedIds` without being overridden by subsequent re-renders.
+  - Project/company switches reset `initializedProjectRef` so newly chosen projects are also auto-expanded on load.
+- Updated `ProjectFlowPage` in [`blauframe-app/src/app/(app)/projects/flow/[id]/page.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/[id]/page.tsx):
+  - Added identical auto-expansion logic for Client Portal Task Flow.
+- Validation:
+  - Admin Vitest: 268 passed / 0 failed (44 test files).
+  - App Vitest: 145 passed / 0 failed (19 test files).
+  - TypeScript: `tsc --noEmit` passed with 0 errors across both apps.
+  - Next.js build: `npm run build` succeeded on both apps (36/36 admin, 29/29 app).
+- Deployment: Committed (`67cb954` in `blauframe-admin`, `c838677` in `blauframe-app`) and pushed directly to `origin/main`.
+
+
 
 
