@@ -319,6 +319,20 @@ Implementation complete locally and pushed to `main` on 2026-11-08:
   - Next.js build: `npm run build` succeeded on both apps (36/36 admin, 29/29 app).
 - Deployment: Committed (`4c14b8d` in `blauframe-admin`, `30e1059` in `blauframe-app`) and pushed directly to `origin/main`.
 
+## BF-WORKSPACE-013 — Lighten Animated Background Grid Cubes on Services Page
+
+Scope: On the landing website (`/en/services`), lighten by 50% the color intensity of the animated background grid cubes in the hero section.
+
+Implementation complete locally and pushed to `main` on 2026-11-08:
+- Updated `AnimatedGrid` in [`blauframe-frontend/src/components/sections/services/ServicesHero.tsx`](file:///c:/Projects/blauframe-frontend/src/components/sections/services/ServicesHero.tsx):
+  - Changed keyframe `cellGlow` peak opacity at 50% from `0.4` to `0.2` (`opacity: 0.2; transform: scale(1.05);`).
+  - Reduces the peak glow intensity of the brand blue (`#2660E9`) animated cubes by 50% against the white background.
+- Validation:
+  - Unit/integration tests: 22 passed / 0 failed in `tests/*.test.mjs`.
+  - TypeScript: Next.js compilation succeeded and type checking completed with 0 errors.
+- Deployment: Committed (`159c22b` in `blauframe-frontend`) and pushed directly to `origin/main`.
+
+
 
 
 
