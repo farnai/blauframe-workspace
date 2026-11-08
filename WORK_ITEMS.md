@@ -383,6 +383,27 @@ Implementation complete locally and pushed to `main` on 2026-11-09:
   - App Vitest: 145 passed / 0 failed (19 test files).
   - Production builds: Next.js `npm run build` succeeded on both Admin (36/36 pages) and App (29/29 pages).
 
+## BF-WORKSPACE-016 — Fullscreen Canvas Toggle via React Flow Control Button
+
+Scope: Enable browser fullscreen toggle when clicking the 4-corner fit-view button (`.react-flow__controls-fitview`) in Task Flow (`blauframe-admin` and `blauframe-app`):
+1. Integrated HTML5 Fullscreen API (`requestFullscreen` / `exitFullscreen`) on the flow canvas wrapper `[data-flow-wrapper]`.
+2. Encapsulated `AppDrawer` and `DeleteDialog` inside the fullscreen wrapper so task inspection, creation, and deletion work seamlessly inside fullscreen mode.
+3. Added `fullscreenchange` event listener with auto-refit: smoothly animates `fitView({ duration: 350, padding: 0.15 })` to perfectly center and scale the flow to the new fullscreen resolution upon entering, and re-centers upon exiting (via button or `Esc` key).
+4. Dynamically updated button tooltip to "Fullscreen / Fit view" and "Exit fullscreen (Esc)".
+
+Implementation complete locally and pushed to `main` on 2026-11-09:
+- Updated `blauframe-admin`:
+  - [`src/app/(admin)/admin/projects/flow/components/ProjectFlow.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/ProjectFlow.tsx): Added `containerRef`, `handleToggleFullscreen`, `fullscreenchange` listener, and `onFitView={handleToggleFullscreen}` to `<Controls>`.
+  - [`src/app/(admin)/admin/projects/flow/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/page.tsx): Wrapped canvas, `AppDrawer`, and `DeleteDialog` in `[data-flow-wrapper]` with dynamic `isFullscreen` styling.
+- Updated `blauframe-app`:
+  - [`src/app/(app)/projects/flow/components/ProjectFlow.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/components/ProjectFlow.tsx): Added `containerRef`, `handleToggleFullscreen`, `fullscreenchange` listener, and `onFitView={handleToggleFullscreen}` to `<Controls>`.
+  - [`src/app/(app)/projects/flow/[id]/page.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/[id]/page.tsx): Wrapped canvas and `AppDrawer` in `[data-flow-wrapper]`.
+- Validation:
+  - Admin Vitest: 268 passed / 0 failed (44 test files).
+  - App Vitest: 145 passed / 0 failed (19 test files).
+  - Next.js build: Succeeded on both Admin (36/36) and App (29/29).
+
+
 
 
 
