@@ -448,6 +448,39 @@ Implementation complete locally on 2026-11-09:
   - App Vitest: 145 passed / 0 failed (19 test files).
   - Production builds: Next.js build succeeded in both Admin (36/36) and App (29/29).
 
+## BF-WORKSPACE-019 — Task Flow Two-Level Simplification & Search Empty State Toolbar Persistence
+
+Scope:
+1. Strictly Two-Level Flow Architecture (Tasks and Subtasks Only):
+   - Eliminated recursive multi-tier child-of-child tree expansion in `useProjectFlow.ts` (`blauframe-admin` and `blauframe-app`).
+   - All subtasks (even if legacy records in DB point to a subtask parent) resolve to their top-level root task via `findRootId`.
+   - Clean, sequential layout: `[Root Task 1] -> [Subtasks 1.x] -> [Root Task 2] -> [Subtasks 2.x]`.
+   - Subtask cards are clean leaf nodes: no `+ Add Subtask` button, no nested checklists, no expandable chevrons.
+2. Deep Search Filter:
+   - Search query matches root tasks by name/description OR by any of their subtasks' name/description, ensuring subtask keyword searches properly reveal their parent stages.
+3. Search Empty State & Persistent Toolbar:
+   - Fixed bug where `EmptyState` overlay hid the bottom toolbar and search input on zero results: moved `FlowToolbar` outside `<ReactFlow>` at `z-30`, ensuring toolbar with search input is always visible.
+   - Context-aware `EmptyState`:
+     - When searching with zero matches: shows Search icon, "No tasks found", `No tasks matched "{search}"`, and a "Clear Search" button.
+     - When project is genuinely empty: shows Monitor icon, "No tasks in this project", and "+ Create First Task".
+   - `FlowToolbar`: synchronized `isSearchOpen = searchOpen || search.length > 0` so the search bar stays open during typing and filtering.
+
+Implementation complete locally on 2026-11-09:
+- Updated `blauframe-admin`:
+  - [`src/app/(admin)/admin/projects/flow/hooks/useProjectFlow.ts`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/hooks/useProjectFlow.ts)
+  - [`src/app/(admin)/admin/projects/flow/components/ProjectFlow.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/ProjectFlow.tsx)
+  - [`src/app/(admin)/admin/projects/flow/components/FlowToolbar.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/FlowToolbar.tsx)
+  - [`src/app/(admin)/admin/projects/flow/components/TaskNode.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/TaskNode.tsx)
+- Updated `blauframe-app`:
+  - [`src/app/(app)/projects/flow/hooks/useProjectFlow.ts`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/hooks/useProjectFlow.ts)
+  - [`src/app/(app)/projects/flow/components/ProjectFlow.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/components/ProjectFlow.tsx)
+  - [`src/app/(app)/projects/flow/components/TaskNode.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/components/TaskNode.tsx)
+- Validation:
+  - Admin Vitest: 268 passed / 0 failed (44 test files).
+  - App Vitest: 145 passed / 0 failed (19 test files).
+  - Production builds: Next.js build succeeded in both Admin (36/36) and App (29/29).
+
+
 
 
 
