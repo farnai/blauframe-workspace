@@ -423,6 +423,32 @@ Implementation complete locally and pushed to `main` on 2026-11-09:
   - App Vitest: 145 passed / 0 failed (19 test files).
   - Next.js production builds: Succeeded on both Admin (36/36) and App (29/29).
 
+## BF-WORKSPACE-018 — Task Flow Edge Traveling Laser Pulse Animation & Full Reversion of Unrelated Sections
+
+Scope:
+1. Reverted all unrelated marketing section additions (`VisualIntegrationFlow`) across `blauframe-frontend`, `blauframe-admin`, and `blauframe-app`, ensuring zero leftover code or mockups.
+2. Implemented elegant traveling laser beam pulse animation on React Flow connection edges in both `blauframe-admin` and `blauframe-app` (`FlowEdge.tsx`):
+   - Single laser beam per edge with dynamic cubic-spline motion (`calcMode="spline"`, `keyTimes="0; 1"`, `keySplines="0.25 0.1 0.25 1"`), eliminating choppy repeating dashed lines.
+   - Natural calm cycle with built-in pause between pulses (`cycleDistance = travelDistance * 1.55`).
+   - Opacity fade-in upon entering from source handle and graceful fade-out into target handle (`values="0; 1; 1; 0; 0"`, `keyTimes="0; 0.12; 0.62; 0.72; 1"`).
+   - Dual-layer depth: crisp linear-gradient laser core plus soft Gaussian halo glow (`feGaussianBlur stdDeviation="2.2"`).
+   - State-aware styling:
+     - `in_progress`: both incoming and outgoing edges illuminate in emerald green (`#10B981` / `#34D399` / `#6EE7B7`, track `#86EFAC`).
+     - `done`: animation cleanly extinguishes into a static muted border (`#CBD5E1`), unless target is actively in progress.
+     - Default (pending): subtle cyan/blue pulse (`#2563EB` / `#38BDF8` / `#93C5FD`, track `#E2E8F0`).
+   - Preserved interactive `+` button (`EdgeLabelRenderer`) on hover between boxes in Admin flow.
+
+Implementation complete locally on 2026-11-09:
+- Updated `blauframe-admin`:
+  - [`src/app/(admin)/admin/projects/flow/components/FlowEdge.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/projects/flow/components/FlowEdge.tsx): Upgraded edge with laser gradient, halo glow, single traveling beam, and status transitions.
+- Updated `blauframe-app`:
+  - [`src/app/(app)/projects/flow/components/FlowEdge.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/projects/flow/components/FlowEdge.tsx): Applied matching edge laser beam animation in client task flow.
+- Validation:
+  - Admin Vitest: 268 passed / 0 failed (44 test files).
+  - App Vitest: 145 passed / 0 failed (19 test files).
+  - Production builds: Next.js build succeeded in both Admin (36/36) and App (29/29).
+
+
 
 
 
