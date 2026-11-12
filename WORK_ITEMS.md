@@ -850,6 +850,14 @@ Status: Comprehensive cross-repository integration verified in isolated worktree
        - Unauthenticated Guest: 401 Unauthorized across all protected API routes; signed temporary media URLs verified for tamper/expiration rejection.
      - Reversible migrations: verified via `tests/Feature/RollbackReadinessTest.php` (`migrate:rollback --step=1/2` and clean re-application).
      - Status: **READY FOR MERGE**
+- Live Forge Site Configurations & Rollback Targets (Audited 2026-11-13):
+  - `blauframe-admin.on-forge.com` (Site 3106506): Branch `main`, Deploy Script: `$CREATE_RELEASE; npm ci || npm install; npm run build; $ACTIVATE_RELEASE`. Rollback target: `1b470f0` (Deployment 82512704).
+  - `blauframe-api.on-forge.com` (Site 3010198): Branch `main`, Deploy Script: `$CREATE_RELEASE; composer install --no-dev --optimize-autoloader; artisan optimize; storage:link; artisan migrate --force; artisan l5-swagger:generate; $ACTIVATE_RELEASE; $RESTART_QUEUES`. Rollback target: `a447b6b` (Deployment 82437043).
+  - `blauframe-app.on-forge.com` (Site 3109192): Branch `dev` (CRITICAL), Deploy Script: `$CREATE_RELEASE; npm ci || npm install; npm run build; $ACTIVATE_RELEASE`. Rollback target: `037cb3d` (Deployment 82517181).
+  - `blauframe-landing.on-forge.com` (Site 3010614): Maps to `sarsevanidze/blauframe-frontend`, Branch `main`, Deploy Script: `$CREATE_RELEASE; npm ci --legacy-peer-deps || npm install --legacy-peer-deps && npm run build; $ACTIVATE_RELEASE; pm2 reload site-3010614`. Rollback target: `0e84045` (Deployment 82441445).
+- Database & Backup Verification:
+  - Forge-managed backup is unavailable without Business Plan upgrade.
+  - Required Pre-Deploy Snapshot: `mysqldump -u forge -p --single-transaction --quick --routines --triggers --default-character-set=utf8mb4 forge | gzip -9 > /home/forge/backups/pre_deploy_$(date +%Y%m%d_%H%M%S).sql.gz`.
 
 
 
