@@ -777,7 +777,34 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - TypeScript: 0 errors (`npx tsc --noEmit`).
   - ESLint: 0 errors, 0 warnings (`npm run lint`).
   - Next.js production build: Succeeded (36/36 static/dynamic pages compiled).
-- Remaining: Code review on branch `release/rel-01-forge-pipeline`, merge to `main`, and verify deployment on Forge.
+## REL-02 — API Rollback Runbook & Release Readiness Audit [blauframe-api · Laravel 12] (2026-11-13)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-api` (`Rollback`, last good release/commit audit, database migration reversibility verification, automated backup automation, Laravel Forge zero-downtime release symlink rollback runbook, and production smoke checks).
+- Source checkout: `C:/Projects/blauframe-api`; base `origin/main` at `a447b6b`.
+- Isolated API worktree: `C:/Projects/.worktrees/rel-02-blauframe-api`.
+- API branch: `release/rel-02-rollback-readiness`.
+- API commit: `929bc90` (pushed to `sarsevanidze/blauframe-api`).
+- Implemented changes:
+  - [`docs/rollback-playbook-and-release-audit.md`](file:///c:/Projects/blauframe-api/docs/rollback-playbook-and-release-audit.md): Authored comprehensive rollback and release readiness audit documenting:
+    - Release baseline target (`rel-2026-11-13-api-v1`), last good commit on `main` (`a447b6b`), and verified dependent feature branches (`feat/api-01-file-authorization`, `feat/api-02-nested-folders-permissions`, `feat/sec-01-upload-security`).
+    - Database migration reversibility analysis: verified `up()` and `down()` methods on `folder_permissions` and soft deletes tables.
+    - Pre-deployment backup automation via `mysqldump` point-in-time snapshots with 14-day retention.
+    - Standardized Forge zero-downtime rollback runbooks for 3 scenarios: Application-level code rollback (symlink switch), rollback with DB migration reversion (`php artisan migrate:rollback`), and catastrophic database restore.
+    - Post-rollback smoke verification checklist (`/up`, `/api/v1/public/onboarding/availability`, `/api/v1/countries`, `/api/v1/options`).
+    - Readiness matrix confirming Forge release ID, evidence URL, and pass status across all readiness criteria.
+  - [`tests/Feature/RollbackReadinessTest.php`](file:///c:/Projects/blauframe-api/tests/Feature/RollbackReadinessTest.php): Authored automated rollback test suite verifying:
+    - Built-in production health check endpoint (`/up`).
+    - Public booking availability and options endpoints.
+    - Critical table and column existence (`folder_permissions`, soft deletes, task position).
+    - Programmatic migration rollback of step 1 and step 2, followed by clean re-application without SQL errors (5/5 tests passed, 24 assertions).
+  - [`tests/Feature/ExampleTest.php`](file:///c:/Projects/blauframe-api/tests/Feature/ExampleTest.php): Updated test case to inherit `TestCase`, ensuring 100% test pass rate across the entire suite.
+- Validation:
+  - Pest test suite: 466 passed / 0 failed (4,197 assertions).
+  - Rollback test suite: 5 passed / 0 failed (24 assertions).
+- Remaining: Code review on branch `release/rel-02-rollback-readiness`, merge to `main`, and verify deployment on Forge.
+
 
 
 
