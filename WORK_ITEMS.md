@@ -709,6 +709,31 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Next.js production build: Succeeded (36/36 static/dynamic pages generated).
 - Remaining: Code review on branch `test/qa-01-admin-regression`, merge to `main`, and verify deployment on Forge.
 
+## QA-02 — Client App Regression Rerun & Validation [blauframe-app · Next.js 14] (2026-11-13)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-app` (`Regression`, complete Vitest rerun on current `main`, TypeScript verification, ESLint cleanup, and production build).
+- Source checkout: `C:/Projects/blauframe-app`; base `origin/main` at `037cb3d`.
+- Isolated App worktree: `C:/Projects/.worktrees/qa-02-blauframe-app`.
+- App branch: `test/qa-02-app-regression`.
+- App commit: `e1161b2` (pushed to `sarsevanidze/blauframe-app`).
+- Implemented changes:
+  - [`docs/client-app-regression-audit-2026-11-13.md`](file:///c:/Projects/blauframe-app/docs/client-app-regression-audit-2026-11-13.md): Authored regression report documenting:
+    - 145/145 Vitest tests passed across 19 test files (+6 new tests added since 2026-10-27 baseline audit of 139).
+    - Route matrix of 29 static/dynamic production pages.
+    - TypeScript validation report (0 errors).
+    - ESLint audit and clean resolution (0 errors, 0 warnings).
+  - [`src/app/(app)/tasks/kanban/page.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/tasks/kanban/page.tsx):
+    - Wrapped `allProjects` initialization in `useMemo` hook, resolving React hook dependency warning and bringing repository ESLint output to 0 errors and 0 warnings.
+- Validation:
+  - Vitest: 145 passed / 0 failed (19 test files).
+  - TypeScript: 0 errors (`npx tsc --noEmit`).
+  - ESLint: 0 errors, 0 warnings (`npm run lint`).
+  - Next.js production build: Succeeded (29/29 static/dynamic pages generated).
+- Remaining: Code review on branch `test/qa-02-app-regression`, merge to `main`, and verify deployment on Forge.
+
+
 
 
 
