@@ -753,7 +753,32 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - TypeScript: 0 errors (`npx tsc --noEmit`).
   - ESLint: 0 errors, 0 warnings (`npm run lint`).
   - Webpack compilation & TypeScript verification: Succeeded.
-- Remaining: Code review on branch `test/qa-03-windows-symlink-failures`, merge to `main`, and verify deployment on Forge.
+## REL-01 — Forge Release Pipeline Verification & Deployment Runbook [blauframe-admin · Next.js 14] (2026-11-13)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-admin` (`Deployment`, `npm ci` clean install verification, lockfile synchronization, Vitest test suite, ESLint audit, TypeScript validation, production Next.js build, and deployment/rollback runbook).
+- Source checkout: `C:/Projects/blauframe-admin`; base `fix/adm-01-picomatch-lockfile` at `e439401`.
+- Isolated Admin worktree: `C:/Projects/.worktrees/rel-01-blauframe-admin`.
+- Admin branch: `release/rel-01-forge-pipeline`.
+- Admin commit: `0334ef3` (pushed to `sarsevanidze/blauframe-admin`).
+- Implemented changes:
+  - [`docs/forge-release-readiness-rel-01.md`](file:///c:/Projects/blauframe-admin/docs/forge-release-readiness-rel-01.md): Authored comprehensive release readiness document and deployment runbook covering:
+    - Clean install verification (`npm ci --dry-run`) with 0 errors, confirming lockfile integrity and bit-for-bit synchronization.
+    - Test suite execution: 268/268 Vitest tests passed across 44 test files.
+    - Static analysis: 0 TypeScript errors and 0 ESLint warnings.
+    - Full production compilation: 36/36 static/dynamic routes compiled cleanly with Next.js 14.
+    - Laravel Forge production deployment script, PM2 / systemd process management commands, and environment variable requirements (`NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_APP_URL`, `PORT`, `NODE_ENV`).
+    - Standardized zero-downtime release symlink rollback strategy and immediate git rollback playbook.
+  - [`src/app/(admin)/admin/tasks/kanban/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/tasks/kanban/page.tsx): Included `columns` dependency in `useMemo` hook, ensuring clean ESLint check with 0 warnings.
+- Validation:
+  - Clean install dry-run: `npm ci --dry-run --no-audit --no-fund` succeeded with 0 errors.
+  - Vitest: 268 passed / 0 failed (44 test files).
+  - TypeScript: 0 errors (`npx tsc --noEmit`).
+  - ESLint: 0 errors, 0 warnings (`npm run lint`).
+  - Next.js production build: Succeeded (36/36 static/dynamic pages compiled).
+- Remaining: Code review on branch `release/rel-01-forge-pipeline`, merge to `main`, and verify deployment on Forge.
+
 
 
 
