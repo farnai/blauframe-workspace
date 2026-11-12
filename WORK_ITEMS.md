@@ -733,6 +733,29 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Next.js production build: Succeeded (29/29 static/dynamic pages generated).
 - Remaining: Code review on branch `test/qa-02-app-regression`, merge to `main`, and verify deployment on Forge.
 
+## QA-03 — Frontend Windows Symlink Resolution & Test Verification [blauframe-frontend · Next.js 16 / Payload 3] (2026-11-13)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-frontend` (`Tests / CMS`, Windows symlink failure root-cause analysis, cross-platform directory junction verification, complete test runner execution, TypeScript and ESLint verification).
+- Source checkout: `C:/Projects/blauframe-frontend`; base `origin/main` at `0e84045`.
+- Isolated Frontend worktree: `C:/Projects/.worktrees/qa-03-blauframe-frontend`.
+- Frontend branch: `test/qa-03-windows-symlink-failures`.
+- Frontend commit: `249edb4` (pushed to `sarsevanidze/blauframe-frontend`).
+- Implemented changes:
+  - [`docs/windows-symlinks-and-tests-audit.md`](file:///c:/Projects/blauframe-frontend/docs/windows-symlinks-and-tests-audit.md): Authored comprehensive audit document covering:
+    - Root cause analysis of historical 2026-10-27 symlink failures: unprivileged `fs.symlinkSync(..., 'dir')` requiring administrator privileges on Windows.
+    - Verified resolution in `src/scripts/prepare-media.mjs`: cross-platform directory junction handling (`process.platform === 'win32' ? 'junction' : 'dir'`), completely eliminating unprivileged symlink errors.
+    - Turbopack vs Webpack worktree behavior: Turbopack restrictions on out-of-root symlinks vs Forge dedicated Linux package installations.
+  - Verified test suite: 25/25 tests passing (0 failures) across `book-a-call-availability`, `ecosystem`, `navigation-and-locales`, `pages-structure`, `proxy`, `scripts`, and `site-urls`.
+- Validation:
+  - Node.js test runner: 25 passed / 0 failed (7 test suites).
+  - TypeScript: 0 errors (`npx tsc --noEmit`).
+  - ESLint: 0 errors, 0 warnings (`npm run lint`).
+  - Webpack compilation & TypeScript verification: Succeeded.
+- Remaining: Code review on branch `test/qa-03-windows-symlink-failures`, merge to `main`, and verify deployment on Forge.
+
+
 
 
 
