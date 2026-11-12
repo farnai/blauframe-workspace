@@ -685,6 +685,31 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Combined suite: 17/17 passed (63 assertions) across `UploadSecurityTest` and `DriveFoldersTest`.
 - Remaining: Code review on branch `feat/sec-01-upload-security`, merge to `main`, and verify deployment on Forge.
 
+## QA-01 — Admin Regression Rerun & Validation [blauframe-admin · Next.js 14] (2026-11-13)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-admin` (`Regression`, complete Vitest rerun on current `main`, TypeScript verification, ESLint cleanup, and production build).
+- Source checkout: `C:/Projects/blauframe-admin`; base `origin/main` at `1b470f0`.
+- Isolated Admin worktree: `C:/Projects/.worktrees/qa-01-blauframe-admin`.
+- Admin branch: `test/qa-01-admin-regression`.
+- Admin commit: `6557651` (pushed to `sarsevanidze/blauframe-admin`).
+- Implemented changes:
+  - [`docs/admin-regression-audit-2026-11-13.md`](file:///c:/Projects/blauframe-admin/docs/admin-regression-audit-2026-11-13.md): Authored regression report documenting:
+    - 268/268 Vitest tests passed across 44 test files (+15 new tests added since 2026-10-27 baseline audit of 253).
+    - Route matrix of 36 static/dynamic production pages.
+    - TypeScript validation report (0 errors).
+    - ESLint audit and clean resolution (0 errors, 0 warnings).
+  - [`src/app/(admin)/admin/tasks/kanban/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/tasks/kanban/page.tsx):
+    - Wrapped `allProjects` and `companies` initializations in `useMemo` hooks, resolving React hook dependency warning and bringing repository ESLint output to 0 errors and 0 warnings.
+- Validation:
+  - Vitest: 268 passed / 0 failed (44 test files).
+  - TypeScript: 0 errors (`npx tsc --noEmit`).
+  - ESLint: 0 errors, 0 warnings (`npm run lint`).
+  - Next.js production build: Succeeded (36/36 static/dynamic pages generated).
+- Remaining: Code review on branch `test/qa-01-admin-regression`, merge to `main`, and verify deployment on Forge.
+
+
 
 
 
