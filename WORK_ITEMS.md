@@ -608,6 +608,48 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Comprehensive repository test suite: 461/461 tests passed (4183 assertions) across `blauframe-api`.
 - Remaining: Code review on branch `feat/api-01-file-authorization`, merge to `main`, and verify deployment on Forge.
 
+## API-02 — Nested Folders, Scopes, Permission Inheritance & Cycle Prevention [Laravel · folders] (2026-11-13)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-api` (`Laravel · folders`, multi-tenant scopes, multi-level permission inheritance, parent moving, and graph cycle prevention).
+- Source checkout: `C:/Projects/blauframe-api`; base `origin/main` at `a447b6b`.
+- Isolated API worktree: `C:/Projects/.worktrees/api-02-blauframe-api`.
+- API branch: `feat/api-02-nested-folders-permissions`.
+- API commit: `f5eb711` (pushed to `sarsevanidze/blauframe-api`).
+- Implemented changes:
+  - [`docs/nested-folders-and-permissions.md`](file:///c:/Projects/blauframe-api/docs/nested-folders-and-permissions.md): Authored architectural documentation covering:
+    - Multi-tenant folder scope distinctions: Private Admin-only (`company_id: null`, unshared), Shared Admin (`company_id: null` with `FolderPermission` grants), and Company-owned private folders (`company_id: int`).
+    - Permission inheritance hierarchy: Dynamic ancestor walking via `FolderPermissionService::resolveFolderPermission()`, resolving nearest permission grants from leaf up to root.
+    - Granular capability matrix for `viewer` (browse/view/download), `contributor` (upload), and `manager` (subfolder creation, rename, move, delete).
+    - Client breadcrumb security sanitization: Masking internal parent folders when sharing deeper subfolders to prevent information leaks.
+    - Parent move constraints: Target company scope validation and graph cycle prevention algorithms in `MoveFolderAction`.
+    - Cascading soft-delete and trashed hierarchy restoration (`DestroyFolderAction` and `RestoreFolderAction`).
+  - [`app/Actions/Folder/MoveFolderAction.php`](file:///c:/Projects/blauframe-api/app/Actions/Folder/MoveFolderAction.php):
+    - Unified validation exception messaging for folder self-moves, subfolder cycles, and cross-company scope violations.
+  - [`lang/en/messages.php`](file:///c:/Projects/blauframe-api/lang/en/messages.php) & [`lang/de/messages.php`](file:///c:/Projects/blauframe-api/lang/de/messages.php):
+    - Added localized error strings for `folder_cannot_move_into_self`, `folder_cannot_move_into_subfolder`, and `folder_cannot_move_different_scope`.
+  - [`README.md`](file:///c:/Projects/blauframe-api/README.md): Linked the nested folders and permission inheritance guide in documentation index.
+  - [`tests/Feature/NestedFolderPermissionsTest.php`](file:///c:/Projects/blauframe-api/tests/Feature/NestedFolderPermissionsTest.php): Authored comprehensive test suite (13 tests, 51 assertions):
+    1. Scope isolation: Clients cannot see or access admin internal unshared folders.
+    2. Multi-tenant isolation: Cross-company folder isolation returns 404.
+    3. Multi-level inheritance: Viewer permission inherits down three levels; viewer can view but is blocked (403) from uploading, creating subfolders, renaming, or deleting.
+    4. Contributor inheritance: Contributor permission inherits down levels and allows uploads, but blocks structural renaming and deletion (403).
+    5. Manager inheritance: Manager permission inherits down levels, permitting subfolder creation, renaming, and moving, while protecting admin root folders from deletion.
+    6. Breadcrumb sanitization: Client breadcrumb trail truncates at the shared folder and does not leak unauthorized internal ancestor names.
+    7. Parent moving: Company folder move within own hierarchy succeeds.
+    8. Scope violation guard: Cannot move folders across company boundaries (422/404).
+    9. Cycle prevention (self): Cannot move folder into itself (422).
+    10. Cycle prevention (child): Cannot move folder into direct child (422).
+    11. Cycle prevention (deep descendant): Cannot move folder into 3-level deep grandchild (422).
+    12. Cascade soft-delete: Trashing a folder soft-deletes its descendants and assets.
+    13. Trashed parent restoration: Restoring an orphaned folder resets `parent_id` to `null` if the parent remains trashed.
+- Validation:
+  - Pest test suite: 13/13 passed (51 assertions) in `NestedFolderPermissionsTest.php`.
+  - Combined folder test suite: 19/19 passed (69 assertions) across `DriveFoldersTest` and `NestedFolderPermissionsTest`.
+- Remaining: Code review on branch `feat/api-02-nested-folders-permissions`, merge to `main`, and verify deployment on Forge.
+
+
 
 
 
