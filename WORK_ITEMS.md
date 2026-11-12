@@ -547,4 +547,32 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Next.js production build: Succeeded (36/36 static/dynamic pages generated).
 - Remaining: Code review on branch `feat/med-02-folders-and-sharing`, merge to `main`, and verify deployment on Forge.
 
+## MED-03 — Client Files Access, IDOR Protection & Permission Isolation [client/files] (2026-11-12)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-app` (`client/files`, client data isolation, access-level enforcement, IDOR defenses).
+- Source checkout: `C:/Projects/blauframe-app`; base `origin/main` at `037cb3d`.
+- Isolated App worktree: `C:/Projects/.worktrees/med-03-blauframe-app`.
+- App branch: `feat/med-03-client-files-access`.
+- App commit: `483c143` (pushed to `sarsevanidze/blauframe-app`).
+- Implemented changes:
+  - [`src/app/(app)/files/page.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/files/page.tsx):
+    - Added error handling state (`isDriveError`) on drive query. When an unauthorized, deleted, or cross-company folder ID (IDOR) is requested, renders a dedicated "Folder Unavailable" secure state with an action to return safely to root files (`/files`), preventing unauthorized upload/creation attempts into invalid scopes.
+    - Protected `handleDownload` with expiration and availability checks, displaying informative toast feedback when signed download URLs are unavailable or expired.
+    - Restricted drag-and-drop and action creation triggers whenever folder error states are detected.
+  - [`src/app/(app)/files/ClientFilesAccess.test.tsx`](file:///c:/Projects/blauframe-app/src/app/(app)/files/ClientFilesAccess.test.tsx): Created a dedicated test suite (5 tests) covering:
+    - Multi-client isolation: Client A sees only Company A files and never sees Company B's confidential documents.
+    - Client B isolation: Client B sees only Company B documents.
+    - IDOR protection: Attempting to access an unauthorized folder ID (404/403) displays the "Folder Unavailable" barrier rather than empty drive with upload tools, and provides a return button.
+    - Permission enforcement: View-only shared folders and assets restrict mutation controls (no rename, move, or trash), while manager folders allow full operations.
+    - Download failure handling: Inaccessible or expired download links trigger error toast notifications.
+- Validation:
+  - Vitest: 150 passed / 0 failed (20 test files).
+  - TypeScript: 0 errors (`tsc --noEmit`).
+  - ESLint: 0 errors (`npm run lint`).
+  - Next.js production build: Succeeded (29/29 static/dynamic pages generated).
+- Remaining: Code review on branch `feat/med-03-client-files-access`, merge to `main`, and verify deployment on Forge.
+
+
 
