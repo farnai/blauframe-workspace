@@ -649,6 +649,43 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Combined folder test suite: 19/19 passed (69 assertions) across `DriveFoldersTest` and `NestedFolderPermissionsTest`.
 - Remaining: Code review on branch `feat/api-02-nested-folders-permissions`, merge to `main`, and verify deployment on Forge.
 
+## SEC-01 — Upload Security, MIME Validation & Negative Testing Suite [Laravel · uploads] (2026-11-13)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-api` (`Laravel · uploads`, MIME and extension validation, file size limits, safe Content-Disposition headers, storage quota enforcement, and negative testing checklist).
+- Source checkout: `C:/Projects/blauframe-api`; base `origin/main` at `a447b6b`.
+- Isolated API worktree: `C:/Projects/.worktrees/sec-01-blauframe-api`.
+- API branch: `feat/sec-01-upload-security`.
+- API commit: `4e8e8ce` (pushed to `sarsevanidze/blauframe-api`).
+- Implemented changes:
+  - [`docs/upload-security-and-negative-checklist.md`](file:///c:/Projects/blauframe-api/docs/upload-security-and-negative-checklist.md): Authored authoritative specification covering:
+    - Defense-in-depth architecture across 5 security layers (Network/Middleware, FormRequest, Controller/Quota, Storage/Sanitization, Delivery/Signed URLs).
+    - Comprehensive Negative Upload Checklist covering 12 test vectors (PHP scripts, binaries, shell scripts, batch files, oversized files, quota exhaustion, path traversal, header injection, public disk leakage, expired signed URLs, and tampered signatures).
+  - [`app/Http/Requests/CP/StoreMediaAssetRequest.php`](file:///c:/Projects/blauframe-api/app/Http/Requests/CP/StoreMediaAssetRequest.php) & [`app/Http/Requests/Application/StoreMediaAssetRequest.php`](file:///c:/Projects/blauframe-api/app/Http/Requests/Application/StoreMediaAssetRequest.php):
+    - Added strict `mimes` allowlist rule (`jpg,jpeg,png,gif,webp,svg,heic,avif,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,rtf,csv,zip,rar,7z,tar,gz,mp4,mov,avi,mkv,webm,mp3,wav,ogg,m4a,json,xml`) and `max:51200` (50MB) limit, rejecting executable binaries and script uploads with 422.
+  - [`app/Http/Controllers/CP/MediaAssetController.php`](file:///c:/Projects/blauframe-api/app/Http/Controllers/CP/MediaAssetController.php) & [`app/Http/Controllers/Application/FileManagerController.php`](file:///c:/Projects/blauframe-api/app/Http/Controllers/Application/FileManagerController.php):
+    - Sanitized `safeName` in `streamMedia()` by replacing `"`, `'`, `/`, and `\` with `_`, preventing Symfony `HeaderUtils` 500 exceptions and protecting against Content-Disposition header injection.
+    - Verified strict delivery headers: `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `Cache-Control: private, no-store`.
+  - [`README.md`](file:///c:/Projects/blauframe-api/README.md): Linked upload security and negative testing checklist in the documentation matrix.
+  - [`tests/Feature/UploadSecurityTest.php`](file:///c:/Projects/blauframe-api/tests/Feature/UploadSecurityTest.php): Authored comprehensive security test suite (11 tests, 45 assertions):
+    1. Rejection of PHP script uploads with 422 (`shell.php`).
+    2. Rejection of binary and script extensions (`.exe`, `.sh`, `.bat`) with 422.
+    3. Acceptance of whitelisted media and document formats (`.png`, `.pdf`, `.zip`).
+    4. Rejection of oversized files exceeding 50MB with 422.
+    5. Storage quota enforcement rejecting uploads when company limit is exceeded (422).
+    6. Directory traversal stripping in uploaded filenames (`../../../../etc/passwd.pdf`).
+    7. Safe Content-Disposition header formatting and quote escaping without 500 error.
+    8. Storage visibility isolation ensuring media is strictly saved to private `local` disk and never public web disk.
+    9. Temporary signed URL access granted within 15-minute validity window without Bearer token.
+    10. Expiration rejection returning 401 when accessing signed URL past validity window.
+    11. Tamper rejection returning 401 on manipulated signature or modified user parameters.
+- Validation:
+  - Pest test suite: 11/11 passed (45 assertions) in `UploadSecurityTest.php`.
+  - Combined suite: 17/17 passed (63 assertions) across `UploadSecurityTest` and `DriveFoldersTest`.
+- Remaining: Code review on branch `feat/sec-01-upload-security`, merge to `main`, and verify deployment on Forge.
+
+
 
 
 
