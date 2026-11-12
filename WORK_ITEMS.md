@@ -495,3 +495,20 @@ Implementation complete locally on 2026-11-09:
 
 
 
+
+## ADM-01 — Synchronize Admin picomatch lockfile (2026-11-12)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-admin/package-lock.json` only; workspace journal records the evidence.
+- Source checkout: `C:/Projects/blauframe-admin`; fetched `origin/main` at `1b470f0`.
+- Isolated Admin checkout: `C:/Users/fiord/Documents/Codex/2026-11-12/https-blauframe-control-frankspool8-chatgpt-site/work/blauframe-admin`.
+- Workspace documentation checkout: `C:/Users/fiord/Documents/Codex/2026-11-12/https-blauframe-control-frankspool8-chatgpt-site/work/blauframe-workspace`.
+- Admin branch: `fix/adm-01-picomatch-lockfile`.
+- Admin commit: `589063e305eaa673e29f9a760d8f43a94625d8da` (pushed to `sarsevanidze/blauframe-admin`).
+- Reproduced with Node 22.16.0 / npm 10.9.2: `npm ci --ignore-scripts --dry-run --no-audit --no-fund` rejected the original lockfile because root picomatch 2.3.2 did not satisfy 4.0.7 and three nested 2.3.2 entries were missing.
+- Regenerated with `npm install --package-lock-only --lockfile-version=2 --ignore-scripts --no-audit --no-fund`. Root picomatch is now 4.0.7 for fdir/tinyglobby/Jest consumers; anymatch, micromatch and readdirp retain nested 2.3.2. Manifest and lockfile format are unchanged; all changed package entries belong to picomatch.
+- Validation: clean `npm ci --no-audit --no-fund` passed (823 packages); `npm ls picomatch` resolved correctly; `npm test` passed 268 tests in 44 files; `npx tsc --noEmit` passed; `npm run build` passed, 36/36 static pages; `git diff --check` passed.
+- Build used local API/Reverb targets and disabled Next telemetry. Existing non-failing warnings: Kanban useMemo dependency and stale Browserslist data. npm also reported existing deprecated dependencies including Next 14.2.29; unrelated dependency upgrades were outside this fix.
+- Remaining: review the branch, merge via the intended main workflow, then verify Forge's Linux npm ci/build and record the deployed release under REL-01. No Forge deployment, runtime smoke test, or known-good production rollback target was verified. A GitHub PR was not created because the browser is not signed in; the branch is available at https://github.com/sarsevanidze/blauframe-admin/tree/fix/adm-01-picomatch-lockfile.
+- Rollback: revert the fix commit through normal review if needed; note that doing so restores the reproduced lockfile error. Production rollback must use an independently verified last-good release.
