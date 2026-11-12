@@ -483,15 +483,41 @@ Implementation complete locally on 2026-11-09:
   - Production builds: Next.js build succeeded in both Admin (36/36) and App (29/29).
   - Deployed branches: Synchronized `origin/dev` with `origin/main` in `blauframe-app` (`037cb3d`) so Forge auto-deploy updates `blauframe-app.on-forge.com` with laser beam pulse animation and two-level flow architecture.
 
+## ADM-01 — Synchronize Admin picomatch lockfile (2026-11-12)
 
+Status: implementation verified and pushed for review; not merged or deployed.
 
+- Scope: `blauframe-admin/package-lock.json` only; workspace journal records the evidence.
+- Source checkout: `C:/Projects/blauframe-admin`; fetched `origin/main` at `1b470f0`.
+- Isolated Admin checkout: `C:/Users/fiord/Documents/Codex/2026-11-12/https-blauframe-control-frankspool8-chatgpt-site/work/blauframe-admin`.
+- Workspace documentation checkout: `C:/Users/fiord/Documents/Codex/2026-11-12/https-blauframe-control-frankspool8-chatgpt-site/work/blauframe-workspace`.
+- Admin branch: `fix/adm-01-picomatch-lockfile`.
+- Admin commit: `589063e305eaa673e29f9a760d8f43a94625d8da` (pushed to `sarsevanidze/blauframe-admin`).
+- Reproduced with Node 22.16.0 / npm 10.9.2: `npm ci --ignore-scripts --dry-run --no-audit --no-fund` rejected the old lockfile.
+- Regenerated with `npm install --package-lock-only --lockfile-version=2 --ignore-scripts --no-audit --no-fund`. Root `picomatch` is 4.0.7; anymatch/micromatch/readdirp keep their nested 2.3.2. `package.json` was not changed.
+- Validation: clean `npm ci --no-audit --no-fund` passed (823 packages); `npm ls picomatch` resolved correctly; `npm test` passed (268/268, 44 files); `npx tsc --noEmit` passed; `npm run build` passed (36/36 pages); `git diff --check` passed.
+- Build used local API/Reverb targets and disabled Next telemetry. Existing non-failing warnings: Kanban useMemo dependency and outdated caniuse-lite/browserslist.
+- Remaining: review the branch, merge via the intended main workflow, then verify Forge's Linux npm ci/build and record the result in Control Center.
+- Rollback: revert the fix commit through normal review if needed; note that doing so restores the reproduced lockfile desynchronization.
 
+## MED-01 — Admin Media Library Internal Workspace Scoping & Test Coverage (2026-11-12)
 
+Status: implementation verified and pushed for review; not merged or deployed.
 
-
-
-
-
-
-
+- Scope: `blauframe-admin` (`admin/media` and `MediaLibraryModal`).
+- Source checkout: `C:/Projects/blauframe-admin`; base `origin/main` at `1b470f0`.
+- Isolated Admin worktree: `C:/Projects/.worktrees/med-01-blauframe-admin`.
+- Admin branch: `feat/med-01-internal-media`.
+- Admin commit: `7a837b6b7910dfe499a0e9725c2406aebb16fbd6` (pushed to `sarsevanidze/blauframe-admin`).
+- Implemented changes:
+  - [`src/components/shared/MediaLibraryModal.tsx`](file:///c:/Projects/blauframe-admin/src/components/shared/MediaLibraryModal.tsx): Explicitly passed `'internal'` workspace to `useDrive(folderId, search, 'internal')` to guarantee strict isolation to internal admin-only media assets when selecting covers/thumbnails for blog posts, guides, and service forms. Replaced invalid nested button HTML structure with accessible, keyboard-interactive card elements.
+  - [`src/app/(admin)/admin/media/hooks/index.ts`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/media/hooks/index.ts): Added user-facing success notification (`File uploaded`) and robust error toast handling (`Failed to upload file`, `Failed to delete file`) to `useUploadToLibrary` and `useDeleteFromLibrary`.
+  - [`src/app/(admin)/admin/media/api/service.test.ts`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/media/api/service.test.ts): Added comprehensive unit tests for `MediaLibraryService.renameFolder` and `MediaLibraryService.removeFolder`, achieving 100% method coverage across all 20 service operations.
+  - [`src/components/shared/MediaLibraryModal.test.tsx`](file:///c:/Projects/blauframe-admin/src/components/shared/MediaLibraryModal.test.tsx): Created new unit test suite (5 tests) verifying internal workspace scoping, folder browsing, image filtering, selection confirmation, and search filtering.
+- Validation:
+  - Admin Vitest: 275 passed / 0 failed (45 test files).
+  - TypeScript: 0 errors (`npx tsc --noEmit`).
+  - ESLint: 0 errors (`npm run lint`).
+  - Next.js production build: Succeeded (36/36 static/dynamic pages generated).
+- Remaining: Review branch `feat/med-01-internal-media`, merge into `main`, and verify deployment on Forge.
 
