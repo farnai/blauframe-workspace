@@ -805,6 +805,53 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Rollback test suite: 5 passed / 0 failed (24 assertions).
 - Remaining: Code review on branch `release/rel-02-rollback-readiness`, merge to `main`, and verify deployment on Forge.
 
+## BF-WORKSPACE-019 — Independent Pre-Release Multi-Repo Integration Audit (2026-11-13)
+
+Status: Comprehensive cross-repository integration verified in isolated worktrees; 0 commits merged into `main`/`dev`, 0 Forge deployments triggered. Ready for human code review.
+
+- Scope: Full integration and smoke verification across all 4 repositories to prove that all 12 work items function seamlessly together prior to production merge.
+- Live Forge Deployment Baselines:
+  - `blauframe-api.on-forge.com`: `a447b6b7cff0a65ba0e5d84f4e258018e9168410` (Deployment ID: `82437043`, branch: `main`).
+  - `blauframe-admin.on-forge.com`: `1b470f0436e7599b7b00459d9f8158a6ad7194aa` (Deployment ID: `82512704`, branch: `main`).
+  - `blauframe-app.on-forge.com`: `037cb3d7b33485108e66e168e3b97fbba6ef8a96` (Deployment ID: `82517181`, branch: `dev` — CRITICAL: Forge deploys from `dev`).
+  - `blauframe-landing.on-forge.com`: `0e840454b57814aca8d6a3032f8fddb82fc3dd64` (Deployment ID: `82441445`, branch: `main`).
+- Forge Database Backup Finding:
+  - Automated backups require Business Plan on Forge and are currently inactive. Manual pre-deployment `mysqldump` snapshot is strictly mandatory.
+- Integration Verification Matrix:
+  1. `blauframe-admin` (`verify/admin-pre-release-integration`, HEAD `ec46aa4`):
+     - Integrated: `feat/med-01-internal-media` (`7a837b6`), `feat/med-02-folders-and-sharing` (`7b911ab`), `test/qa-01-admin-regression` (`6557651`), `release/rel-01-forge-pipeline` (`0334ef3`).
+     - `npm ci --dry-run`: 0 errors.
+     - TypeScript (`tsc --noEmit`): 0 errors (exit code 0).
+     - ESLint (`npm run lint`): 0 warnings, 0 errors (exit code 0).
+     - Vitest (`npm test`): 47/47 files passed, 283/283 tests passed (exit code 0).
+     - Next.js build (`npm run build`): 36/36 static/dynamic routes compiled cleanly (exit code 0).
+     - Status: **READY FOR MERGE**
+  2. `blauframe-app` (`verify/app-pre-release-integration`, HEAD `460979b`):
+     - Integrated: `feat/med-03-client-files-access` (`483c143`), `test/qa-02-app-regression` (`e1161b2`) onto `dev` (`037cb3d`).
+     - TypeScript (`tsc --noEmit`): 0 errors (exit code 0).
+     - ESLint (`npm run lint`): 0 warnings, 0 errors (exit code 0).
+     - Vitest (`npm test`): 20/20 files passed, 150/150 tests passed (exit code 0).
+     - Next.js build (`npm run build`): 29/29 static/dynamic routes compiled cleanly (exit code 0).
+     - Status: **READY FOR MERGE** (Target: `dev` for Forge, or update Forge site branch configuration to `main`).
+  3. `blauframe-frontend` (`verify/frontend-pre-release-integration`, HEAD `95b1dfb`):
+     - Integrated: `test/qa-03-windows-symlink-failures` (`249edb4`) onto `main` (`0e84045`).
+     - TypeScript (`tsc --noEmit`): 0 errors (exit code 0).
+     - ESLint (`npm run lint`): 0 warnings, 0 errors (exit code 0).
+     - Node.js test runner (`npm test`): 25/25 tests passed (exit code 0).
+     - Status: **READY FOR MERGE**
+  4. `blauframe-api` (`verify/api-pre-release-integration`, HEAD `9a7b85a`):
+     - Integrated: `feat/api-01-file-authorization` (`d029d71`), `feat/api-02-nested-folders-permissions` (`f5eb711`), `feat/sec-01-upload-security` (`4e8e8ce`), `release/rel-02-rollback-readiness` (`929bc90`) onto `main` (`a447b6b`).
+     - Merge conflict resolution: `README.md` documentation guide table unified.
+     - Pest test suite: 500/500 passed (4,363 assertions, exit code 0).
+     - Multi-tenant 4-role verification:
+       - Admin: CP media library, upload, folder CRUD, cross-company access (HTTP 200/201).
+       - Client A (Company A): restricted to assigned shared folders & own private drive; 403 on CP routes; cannot move folders into other companies or self.
+       - Client B (Company B): strictly isolated from Company A folders/files; IDOR attempts return 404/403.
+       - Unauthenticated Guest: 401 Unauthorized across all protected API routes; signed temporary media URLs verified for tamper/expiration rejection.
+     - Reversible migrations: verified via `tests/Feature/RollbackReadinessTest.php` (`migrate:rollback --step=1/2` and clean re-application).
+     - Status: **READY FOR MERGE**
+
+
 
 
 
