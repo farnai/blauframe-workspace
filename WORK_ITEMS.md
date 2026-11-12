@@ -521,3 +521,30 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Next.js production build: Succeeded (36/36 static/dynamic pages generated).
 - Remaining: Review branch `feat/med-01-internal-media`, merge into `main`, and verify deployment on Forge.
 
+## MED-02 — Folders & Sharing Hierarchy, Destination Selection & Permissions [admin/files] (2026-11-12)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-admin` (`admin/files`, `admin/media`, folder hierarchy and sharing).
+- Source checkout: `C:/Projects/blauframe-admin`; base `feat/med-01-internal-media` at `7a837b6`.
+- Isolated Admin worktree: `C:/Projects/.worktrees/med-02-blauframe-admin`.
+- Admin branch: `feat/med-02-folders-and-sharing`.
+- Admin commit: `7b911ab` (pushed to `sarsevanidze/blauframe-admin`).
+- Implemented changes:
+  - [`src/app/(admin)/admin/files/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/files/page.tsx): Added direct header navigation action linking `Attachments` (`/admin/files`) to `Media Drive` (`/admin/media`), connecting attachment management with folder hierarchy and sharing.
+  - [`src/app/(admin)/admin/media/page.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/media/page.tsx):
+    - Added hierarchical ancestor breadcrumb options in Move Folder and Move File dialogs, allowing users to move folders and files both up the tree (to parent and ancestor folders) and down into subfolders.
+    - Updated shared status badge logic to recognize folders within shared workspace hierarchy.
+    - Wrapped breadcrumbs in `useMemo` to eliminate React Hook exhaustive dependency warnings.
+  - [`src/app/(admin)/admin/media/hooks/index.ts`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/media/hooks/index.ts): Updated `useShareFolder` to invalidate `['folder-permissions']` query cache upon granting company permissions so permissions lists update immediately in the active modal.
+  - [`src/app/(admin)/admin/media/api/service.test.ts`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/media/api/service.test.ts): Added tests for nested folder creation (`parentId`) and multi-level folder sharing with companies.
+  - [`src/app/(admin)/admin/media/FolderManagement.test.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/media/FolderManagement.test.tsx): Added unit tests for files page navigation to Media Drive.
+  - [`src/app/(admin)/admin/media/hooks/index.test.tsx`](file:///c:/Projects/blauframe-admin/src/app/(admin)/admin/media/hooks/index.test.tsx): Added unit tests for folder creation, moving, sharing, and permission revocation with cache invalidation verification.
+- Validation:
+  - Vitest: 283 passed / 0 failed (47 test files).
+  - TypeScript: 0 errors (`tsc --noEmit`).
+  - ESLint: 0 errors (`npm run lint`).
+  - Next.js production build: Succeeded (36/36 static/dynamic pages generated).
+- Remaining: Code review on branch `feat/med-02-folders-and-sharing`, merge to `main`, and verify deployment on Forge.
+
+
