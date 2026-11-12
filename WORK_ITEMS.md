@@ -574,5 +574,40 @@ Status: implementation verified and pushed for review; not merged or deployed.
   - Next.js production build: Succeeded (29/29 static/dynamic pages generated).
 - Remaining: Code review on branch `feat/med-03-client-files-access`, merge to `main`, and verify deployment on Forge.
 
+## API-01 — File Authorization & Tenant Isolation [Laravel · files] (2026-11-13)
+
+Status: implementation verified and pushed for review; not merged or deployed.
+
+- Scope: `blauframe-api` (`Laravel · files`, file authorization, 401/403/404 matrix, tenant isolation, and private storage).
+- Source checkout: `C:/Projects/blauframe-api`; base `origin/main` at `a447b6b`.
+- Isolated API worktree: `C:/Projects/.worktrees/api-01-blauframe-api`.
+- API branch: `feat/api-01-file-authorization`.
+- API commit: `d029d71` (pushed to `sarsevanidze/blauframe-api`).
+- Implemented changes:
+  - [`docs/file-authorization-and-isolation.md`](file:///c:/Projects/blauframe-api/docs/file-authorization-and-isolation.md): Authored authoritative specification and inventory documenting:
+    - Complete route inventory for Control Panel (`/api/v1/cp/media-library*`, `/api/v1/cp/file-manager*`) and Client Portal (`/api/v1/app/files*`).
+    - Controller and Action mapping (`MediaAssetController`, `FileManagerController`, `StoreMediaAssetAction`, `MoveAssetAction`, `RestoreMediaAssetAction`, `FolderPermissionService`).
+    - Defense-in-depth middleware layers and status codes (`auth:sanctum` 401, `admin` 403, `company.active` 403, `onboarding.completed` 403, `auth.or.signed` 401/403, and IDOR query isolation 404).
+    - Granular permission hierarchy (`viewer` list/preview/download, `contributor` upload, `manager` rename/move/delete/subfolders) with ancestor inheritance.
+    - Storage isolation architecture: files stored strictly on the private `local` disk (`storage/app/private`), short-lived 15-minute temporary signed URLs, and security response headers (`X-Content-Type-Options: nosniff`, `Cache-Control: no-store, private`, `Referrer-Policy: no-referrer`).
+  - [`README.md`](file:///c:/Projects/blauframe-api/README.md) & [`docs/api-and-auth.md`](file:///c:/Projects/blauframe-api/docs/api-and-auth.md): Linked the file authorization and isolation specification in the documentation matrix.
+  - [`tests/Feature/FileAuthorizationSecurityTest.php`](file:///c:/Projects/blauframe-api/tests/Feature/FileAuthorizationSecurityTest.php): Created dedicated security test suite with 10 comprehensive tests (80 assertions):
+    1. Unauthenticated requests to all 14 CP media library and file manager endpoints return 401.
+    2. Unauthenticated requests to all 15 Client Portal file and folder endpoints return 401.
+    3. Customer users are strictly forbidden (403) from accessing all CP media and file routes.
+    4. Suspended company users are forbidden (403) from client app file operations.
+    5. Incomplete onboarding users are blocked (403) by the `onboarding.completed` gate.
+    6. Granular permission enforcement: Viewers can preview and download but are rejected (403) from uploading or deleting; contributors can upload but cannot delete; managers have full mutation permissions.
+    7. Client users are forbidden (403) from modifying or deleting admin-shared root folders or moving shared assets to their private root.
+    8. Cross-company IDOR tenant isolation: Customer A accessing, downloading, previewing, renaming, or deleting Customer B's files or unshared internal admin files returns 404 Not Found to prevent data leakage.
+    9. Temporary signed URLs permit preview and download without tokens, while tampered or invalid signatures fail with 401.
+    10. Media assets are confirmed stored exclusively on the private `local` disk and are never accessible via the `public` disk.
+- Validation:
+  - Pest test suite: 10/10 passed (80 assertions) in `FileAuthorizationSecurityTest.php`.
+  - Full file/media test suites: 38/38 passed (281 assertions) across `FileAuthorizationSecurityTest`, `MediaDriveSecurityTest`, `MediaDriveCompleteE2EFlowTest`, and `ApplicationFilesTest`.
+  - Comprehensive repository test suite: 461/461 tests passed (4183 assertions) across `blauframe-api`.
+- Remaining: Code review on branch `feat/api-01-file-authorization`, merge to `main`, and verify deployment on Forge.
+
+
 
 
