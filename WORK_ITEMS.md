@@ -857,7 +857,29 @@ Status: Comprehensive cross-repository integration verified in isolated worktree
   - `blauframe-landing.on-forge.com` (Site 3010614): Maps to `sarsevanidze/blauframe-frontend`, Branch `main`, Deploy Script: `$CREATE_RELEASE; npm ci --legacy-peer-deps || npm install --legacy-peer-deps && npm run build; $ACTIVATE_RELEASE; pm2 reload site-3010614`. Rollback target: `0e84045` (Deployment 82441445).
 - Database & Backup Verification:
   - Forge-managed backup is unavailable without Business Plan upgrade.
-  - Required Pre-Deploy Snapshot: `mysqldump -u forge -p --single-transaction --quick --routines --triggers --default-character-set=utf8mb4 forge | gzip -9 > /home/forge/backups/pre_deploy_$(date +%Y%m%d_%H%M%S).sql.gz`.
+  - Required Hardened Pre-Deploy Snapshot Script (Mandatory Deployment Prerequisite):
+    ```bash
+    #!/usr/bin/env bash
+    set -euo pipefail
+    umask 077
+    BACKUP_DIR="/home/forge/backups"
+    mkdir -p "$BACKUP_DIR"
+    TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+    TMP_FILE="${BACKUP_DIR}/forge_backup_${TIMESTAMP}.sql.gz.tmp"
+    FINAL_FILE="${BACKUP_DIR}/forge_backup_${TIMESTAMP}.sql.gz"
+    mysqldump --defaults-extra-file=/home/forge/.my.cnf --single-transaction --quick --routines --triggers --default-character-set=utf8mb4 forge | gzip -9 > "$TMP_FILE"
+    gzip -t "$TMP_FILE"
+    mv "$TMP_FILE" "$FINAL_FILE"
+    ```
+- Rollback Scope & Schema vs Data Boundary Analysis:
+  - Schema Reversibility: VERIFIED. `migrate:rollback` cleanly executes all `down()` methods, removing newly added tables (`folder_permissions`) and columns (`deleted_at`) without constraint or syntax errors, reverting schema structure to `a447b6b`.
+  - Data Loss Implication: INEVITABLE ON ROLLBACK. Dropping new tables/columns via `down()` inherently deletes data written to those new fields during the deployment window. Schema rollback cannot preserve dropped data; catastrophic restore from pre-deploy snapshot is required if transaction rollback is unacceptable.
+  - Untested / Unknown in Production: Behavior under high-concurrency production MySQL 8.0 with real foreign key loads and dump restoration duration.
+- Final 3-Category Readiness Assessment:
+  - **Code Readiness**: **READY** (Static typing, linting, unit/feature tests 100% passing across all 4 repos).
+  - **Integration Readiness**: **READY** (Zero merge conflicts, cross-repository contracts verified, 500 Pest tests and full Next.js builds passing).
+  - **Deployment / Backup / Rollback Readiness**: **NOT READY** (Blocked pending manual execution and verification of pre-deploy database snapshot on Forge). Zero code merged to `main`/`dev`.
+
 
 
 
